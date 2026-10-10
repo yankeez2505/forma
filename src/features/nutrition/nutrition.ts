@@ -1,7 +1,9 @@
 import { CATEGORY_ORDER, menuById, type Food, type Macros, type Menu, type MenuDay, type MenuGoal, type MenuItem } from "./foods"
+import { targetId } from "@/features/program/model"
 import { bmr, targets, tdee, type Targets } from "@/lib/calc"
 import { parseISO } from "@/lib/dates"
-import type { Goal, Profile } from "@/lib/schema"
+import type { Rows, Upsertable } from "@/lib/db"
+import type { Goal, NutritionTarget, Profile } from "@/lib/schema"
 
 export type NutritionProfile = Pick<Profile, "sex" | "birth_year" | "height_cm" | "activity_level" | "goal" | "days_per_week">
 
@@ -51,4 +53,19 @@ export function shoppingList(menu: Menu, foods: Map<string, Food>): ShoppingLine
     lines.push(food.unit ? { food, grams: g, units: Math.ceil(g / food.unit.grams) } : { food, grams: g })
   }
   return lines.sort((a, b) => CATEGORY_ORDER.indexOf(a.food.category) - CATEGORY_ORDER.indexOf(b.food.category) || a.food.name.localeCompare(b.food.name, "ru"))
+}
+
+export function targetRow(userId: string, today: string, t: Targets): Upsertable<"nutrition_targets"> {
+  return { id: targetId(userId, today), date_from: today, ...t }
+}
+
+export function latestTarget(rows: Rows): NutritionTarget | undefined {
+  let best: NutritionTarget | undefined
+  for (const t of Object.values(rows.nutrition_targets)) if (!best || t.date_from > best.date_from) best = t
+  return best
+}
+
+export function needsNewTarget(rows: Rows, t: Targets): boolean {
+  const last = latestTarget(rows)
+  return !last || last.kcal !== t.kcal || last.protein_g !== t.protein_g || last.fat_g !== t.fat_g || last.carbs_g !== t.carbs_g
 }

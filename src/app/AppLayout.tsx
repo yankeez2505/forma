@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router"
+import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
 import { UserRound } from "lucide-react"
 import { BottomNav } from "./BottomNav"
@@ -18,6 +19,7 @@ export default function AppLayout() {
       </header>
       <Outlet />
       {!bare && <BottomNav />}
+      <Toaster position="top-center" />
     </div>
   )
 }

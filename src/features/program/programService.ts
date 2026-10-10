@@ -102,6 +102,8 @@ export function buildProgram(cfg: StoredConfig, exercises: Exercise[], history: 
 }
 
 /** the same program row with the next block: config bumped, sessions regenerated from blockStart */
-export function nextBlock(_program: Program, _latestTest: TestInput, _blockStart: string, _exercises: Exercise[], _history: SessionLog[]): ProgramRows {
-  throw new Error("not implemented")
+export function nextBlock(program: Program, latestTest: TestInput, blockStart: string, exercises: Exercise[], history: SessionLog[]): ProgramRows {
+  const prev = storedConfig(program)
+  const cfg: StoredConfig = { ...prev, latestTest, blockIndex: prev.blockIndex + 1, blockStart }
+  return buildProgram(cfg, exercises, history, program.id)
 }

@@ -85,7 +85,7 @@ export function progress(d: ActiveWorkout): { done: number; total: number } {
 /** records a set; rest starts only when another set is still ahead */
 export function logSet(d: ActiveWorkout, s: SetLog, nowMs: number): ActiveWorkout {
   const next = { ...d, sets: { ...d.sets, [setKey(s.slug, s.setNo)]: s } }
-  const restS = d.plan.exercises.find((e) => e.slug === s.slug)?.restS ?? 0
+  const restS = d.plan.exercises.find((e) => LOGGED.includes(e.block) && e.slug === s.slug)?.restS ?? 0
   return { ...next, restUntil: nextSet(next) && restS > 0 ? nowMs + restS * 1000 : null }
 }
 export const toggleDone = (d: ActiveWorkout, slug: string): ActiveWorkout => ({

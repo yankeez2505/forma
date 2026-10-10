@@ -72,3 +72,11 @@ it("resumeDecision: continue the same workout or session, ask about another, non
   expect(resumeDecision(d, { plannedId: first.id })).toBe("continue")
   expect(resumeDecision(d, { plannedId: "other" })).toBe("ask")
 })
+
+it("logSet rests after a main set even when the warm-up repeats the slug", () => {
+  const { prepared, plan } = planForStart(rows, first.id, null, exercises)!
+  const m = plan.exercises.find((e) => LOGGED.includes(e.block))!
+  const twice = { ...plan, exercises: [{ ...m, block: "warmup" as const, sets: 1, restS: 0 }, ...plan.exercises] }
+  const d = logSet(startWorkout(row, prepared, twice, null, now, "w3").draft, { slug: m.slug, setNo: 1, reps: 10 }, 1000)
+  expect(d.restUntil).toBe(1000 + m.restS * 1000)
+})

@@ -25,6 +25,9 @@ export interface DbState {
 
 export const emptyRows = (): Rows => Object.fromEntries(TABLES.map((t) => [t, {}])) as Rows
 
+/** localStorage in the browser, an in-memory map under node (tests) */
+export const jsonStorage = () => createJSONStorage(() => (typeof window === "undefined" ? memoryStorage : localStorage))
+
 const mem = new Map<string, string>()
 const memoryStorage: StateStorage = {
   getItem: (k) => mem.get(k) ?? null,
@@ -88,7 +91,7 @@ export const useDb = create<DbState>()(
     }),
     {
       name: "forma-db",
-      storage: createJSONStorage(() => (typeof window === "undefined" ? memoryStorage : localStorage)),
+      storage: jsonStorage(),
       partialize: (s) => ({ rows: s.rows, pending: s.pending, userId: s.userId }),
     },
   ),

@@ -1,10 +1,10 @@
 import type { Exercise, Muscle } from "@/content/types"
 import { weekProgress } from "@/features/calendar/calendar"
-import { isoDate } from "@/features/program/model"
+import { isoDate, metricId } from "@/features/program/model"
 import { navyBodyFat, rollingMean, type Point } from "@/lib/calc"
 import { addDays, startOfWeek } from "@/lib/dates"
-import type { Rows } from "@/lib/db"
-import type { Profile, TestRow } from "@/lib/schema"
+import type { Rows, Upsertable } from "@/lib/db"
+import type { BodyMetric, Profile, TestRow } from "@/lib/schema"
 
 export type MuscleGroup = "chest" | "back" | "shoulders" | "arms" | "legs" | "glutes" | "core" | "calves"
 
@@ -101,4 +101,13 @@ export function bodyFatNow(rows: Rows, profile: Pick<Profile, "sex" | "height_cm
     .sort((a, b) => b.date.localeCompare(a.date))[0]
   if (!latest || latest.waist_cm === null || latest.neck_cm === null) return null
   return navyBodyFat({ sex: profile.sex, heightCm: profile.height_cm, waistCm: latest.waist_cm, neckCm: latest.neck_cm, hipCm: latest.hip_cm ?? undefined })
+}
+
+/** the body_metrics row for a date: patched fields win (null clears a value), the rest come from the existing row */
+export function mergeMetric(existing: BodyMetric | undefined, patch: Partial<Record<MetricKey, number | null>>, userId: string, date: string): Upsertable<"body_metrics"> {
+  const pick = (k: MetricKey): number | null => {
+    const v = patch[k]
+    return v === undefined ? (existing?.[k] ?? null) : v
+  }
+  return { id: metricId(userId, date), date, weight_kg: pick("weight_kg"), waist_cm: pick("waist_cm"), neck_cm: pick("neck_cm"), hip_cm: pick("hip_cm") }
 }

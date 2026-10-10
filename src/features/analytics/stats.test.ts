@@ -1,10 +1,11 @@
 import { expect, it } from "vitest"
 import { all as exercises, bySlug } from "@/features/exercises/useExercises"
 import { finishSession, ownerProfileRow, programRows } from "@/features/program/engine/fixtures/rows"
+import { metricId } from "@/features/program/model"
 import { plannedSessions } from "@/features/program/programService"
 import { navyBodyFat } from "@/lib/calc"
 import { emptyRows } from "@/lib/db"
-import { bodyFatNow, GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, planVsFact, testSeries, weeklySetsByGroup, weightTrend } from "./stats"
+import { bodyFatNow, GROUP_RU, latestValue, mergeMetric, metricSeries, MUSCLE_GROUP, planVsFact, testSeries, weeklySetsByGroup, weightTrend } from "./stats"
 
 const metric = (id: string, date: string, weight_kg: number | null, waist_cm: number | null = null, neck_cm: number | null = null, hip_cm: number | null = null) =>
   ({ id, user_id: "local", created_at: "", updated_at: "", date, weight_kg, waist_cm, neck_cm, hip_cm })
@@ -60,4 +61,10 @@ it("testSeries sorts by date; bodyFatNow needs waist and neck, plus hip for wome
   expect(bodyFatNow(rows, { sex: "female", height_cm: 165 })).toBeNull()
   rows.body_metrics.a.hip_cm = 100
   expect(bodyFatNow(rows, { sex: "female", height_cm: 165 })).not.toBeNull()
+})
+it("mergeMetric keeps fields missing from the patch and uses the deterministic id", () => {
+  const existing = metric("x", "2026-10-12", 82, 90, null)
+  expect(mergeMetric(existing, { weight_kg: 81.5, neck_cm: 40 }, "local", "2026-10-12")).toEqual({ id: metricId("local", "2026-10-12"), date: "2026-10-12", weight_kg: 81.5, waist_cm: 90, neck_cm: 40, hip_cm: null })
+  expect(mergeMetric(undefined, { weight_kg: 80 }, "local", "2026-10-13")).toEqual({ id: metricId("local", "2026-10-13"), date: "2026-10-13", weight_kg: 80, waist_cm: null, neck_cm: null, hip_cm: null })
+  expect(mergeMetric(existing, { waist_cm: null }, "local", "2026-10-12").waist_cm).toBeNull()
 })

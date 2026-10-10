@@ -6,6 +6,7 @@ import ExercisePage from "@/features/exercises/ExercisePage"
 import ExercisesPage from "@/features/exercises/ExercisesPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import NutritionPage from "./pages/NutritionPage"
+import OnboardingPage from "@/features/onboarding/OnboardingPage"
 import ProfilePage from "./pages/ProfilePage"
 import ProgressPage from "./pages/ProgressPage"
 import TodayPage from "./pages/TodayPage"
@@ -25,6 +26,7 @@ export const router = createBrowserRouter(
         { path: "nutrition", element: <NutritionPage /> },
         { path: "profile", element: <ProfilePage /> },
         { path: "auth", element: <AuthPage /> },
+        { path: "onboarding", element: <OnboardingPage /> },
         { path: "dev/preview", lazy: () => import("./pages/DevPreviewPage").then((m) => ({ Component: m.default })) },
         { path: "*", element: <NotFoundPage /> },
       ],

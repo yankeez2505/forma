@@ -23,9 +23,13 @@ export function monthGrid(monthStart: string): string[][] {
   return weeks
 }
 
+/** planned sessions a person should still see: the active program's, plus any session a finished workout closed */
+const visiblePlanned = (rows: Rows, finished = finishedByPlanned(rows)) =>
+  Object.values(rows.planned_sessions).filter((s) => rows.programs[s.program_id]?.active || finished.has(s.id))
+
 /** the planned session on a date (newest updated_at wins) and the finished workouts started that day */
 export function daySessions(rows: Rows, date: string): { planned?: PlannedSession; workouts: Workout[] } {
-  const planned = Object.values(rows.planned_sessions)
+  const planned = visiblePlanned(rows)
     .filter((s) => s.date === date)
     .sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0]
   const workouts = Object.values(rows.workouts)
@@ -46,7 +50,7 @@ export function dayStatus(rows: Rows, date: string, today: string): DayStatus {
 export function weekProgress(rows: Rows, weekStart: string): { done: number; total: number } {
   const end = addDays(weekStart, 6)
   const finished = finishedByPlanned(rows)
-  const week = Object.values(rows.planned_sessions).filter((s) => s.date >= weekStart && s.date <= end)
+  const week = visiblePlanned(rows, finished).filter((s) => s.date >= weekStart && s.date <= end)
   return { done: week.filter((s) => finished.has(s.id)).length, total: week.length }
 }
 

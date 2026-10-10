@@ -1,7 +1,9 @@
 import { expect, it } from "vitest"
 
-import { finishSession, programRows } from "@/features/program/engine/fixtures/rows"
-import { plannedSessions } from "@/features/program/programService"
+import { all as exercises } from "@/features/exercises/useExercises"
+import type { Rows } from "@/lib/db"
+import { finishSession, META, ownerStored, programRows } from "@/features/program/engine/fixtures/rows"
+import { buildProgram, plannedSessions } from "@/features/program/programService"
 import { dayStatus, daySessions, monthGrid, weekProgress, weekStreak, workoutSummary } from "./calendar"
 
 it("monthGrid covers a month in Monday-based weeks", () => {
@@ -69,4 +71,18 @@ it("workoutSummary groups sets by exercise in order", () => {
     { slug: "squat", setNo: 1, reps: 15, durationS: null, weightKg: 10 },
   ])
   expect(workoutSummary(rows, "nope")).toBeUndefined()
+})
+
+it("hides unfinished sessions of a replaced program and keeps its finished ones", () => {
+  const rows = programRows()
+  const s = plannedSessions(rows, "p1")
+  finishSession(rows, s[0].id, "2026-10-12T18:00:00.000Z", [])
+  rows.programs.p1 = { ...rows.programs.p1, active: false }
+  const p2 = buildProgram({ ...ownerStored, startDate: "2026-10-19", blockStart: "2026-10-19" }, exercises, [], "p2")
+  rows.programs.p2 = { ...p2.program, ...META } as Rows["programs"][string]
+  for (const x of p2.sessions) rows.planned_sessions[x.id] = { ...x, ...META } as Rows["planned_sessions"][string]
+  expect(dayStatus(rows, "2026-10-12", "2026-10-20")).toBe("done") // finished under p1 stays
+  expect(dayStatus(rows, "2026-10-14", "2026-10-20")).toBe("rest") // p1's unfinished Wednesday is gone
+  expect(weekProgress(rows, "2026-10-19")).toEqual({ done: 0, total: 3 }) // p2 only, not p1 + p2
+  expect(weekStreak(rows, "2026-10-16")).toBe(1) // week of 12.10: 1 visible, 1 done
 })

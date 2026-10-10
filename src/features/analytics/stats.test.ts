@@ -1,7 +1,9 @@
 import { expect, it } from "vitest"
-import { all as exercises } from "@/features/exercises/useExercises"
+import { all as exercises, bySlug } from "@/features/exercises/useExercises"
+import { finishSession, programRows } from "@/features/program/engine/fixtures/rows"
+import { plannedSessions } from "@/features/program/programService"
 import { emptyRows } from "@/lib/db"
-import { GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, weightTrend } from "./stats"
+import { GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, weeklySetsByGroup, weightTrend } from "./stats"
 
 const metric = (id: string, date: string, weight_kg: number | null, waist_cm: number | null = null, neck_cm: number | null = null, hip_cm: number | null = null) =>
   ({ id, user_id: "local", created_at: "", updated_at: "", date, weight_kg, waist_cm, neck_cm, hip_cm })
@@ -21,4 +23,17 @@ it("metricSeries skips nulls and sorts by date; latestValue; weightTrend has a 7
   expect(latestValue(rows, "waist_cm")).toEqual({ date: "2026-10-16", value: 90 })
   expect(latestValue(rows, "hip_cm")).toBeUndefined()
   expect(weightTrend(rows).mean).toEqual([{ date: "2026-10-12", value: 82 }, { date: "2026-10-14", value: 81.5 }])
+})
+it("weeklySetsByGroup counts a set once per primary muscle group", () => {
+  const rows = programRows()
+  const s = plannedSessions(rows, "p1")
+  const push = exercises.find((e) => e.pattern === "push_h")!
+  const squat = exercises.find((e) => e.pattern === "squat")!
+  finishSession(rows, s[0].id, "2026-10-12T18:00:00.000Z", [{ slug: push.slug, reps: 10 }, { slug: push.slug, reps: 8 }, { slug: squat.slug, reps: 15 }, { slug: "unknown-slug", reps: 1 }])
+  finishSession(rows, s[3].id, "2026-10-19T18:00:00.000Z", [{ slug: push.slug, reps: 10 }])
+  const groups = weeklySetsByGroup(rows, bySlug, "2026-10-12")
+  const expected: Record<string, number> = { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 0, glutes: 0, core: 0, calves: 0 }
+  for (const g of new Set(push.primaryMuscles.map((m) => MUSCLE_GROUP[m]))) expected[g] += 2
+  for (const g of new Set(squat.primaryMuscles.map((m) => MUSCLE_GROUP[m]))) expected[g] += 1
+  expect(groups).toEqual(expected)
 })

@@ -6,16 +6,10 @@ import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { all, bySlug } from "@/features/exercises/useExercises"
-import { generateBlock, type Block, type DayType, type PlannedExercise } from "@/features/program/engine"
+import { generateBlock, type PlannedExercise } from "@/features/program/engine"
 import { clearedAnkle, ownerBaseline, ownerConfig } from "@/features/program/engine/fixtures/owner"
-import { parseISO } from "@/lib/dates"
+import { BLOCK_RU, DAY_RU, dose, fmtDate } from "@/features/program/format"
 
-const BLOCK_RU: Record<Block, string> = { warmup: "Разминка", main: "Основная", finisher: "Финишер", cooldown: "Заминка" }
-const DAY_RU: Record<DayType, string> = { A: "Full-body A", B: "Full-body B", U: "Верх", L: "Низ" }
-
-const fmtDate = (iso: string) => parseISO(iso).toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "short" })
-const dose = (e: PlannedExercise) =>
-  e.reps ? `${e.sets}×${e.reps[0]}${e.reps[1] > e.reps[0] ? `–${e.reps[1]}` : ""}` : `${e.sets}×${e.durationS} с`
 const mainSets = (exs: PlannedExercise[]) => exs.reduce((n, e) => n + (e.block === "main" ? e.sets : 0), 0)
 
 /** golden plan for the owner's fixture: a dev-only view over the engine, no network */

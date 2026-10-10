@@ -45,7 +45,12 @@ const todo = (...used: unknown[]): never => {
   throw new Error("not implemented")
 }
 export function planForStart(rows: Rows, plannedId: string, checkIn: CheckIn | null, exercises: Exercise[]): { prepared: SessionPlan; plan: SessionPlan } | undefined {
-  return todo(rows, plannedId, checkIn, exercises)
+  const row = rows.planned_sessions[plannedId]
+  const program = activeProgram(rows)
+  if (!row || !program) return undefined
+  const prepared = prepareSession(toSessionPlan(row), historyFor(rows), storedConfig(program), exercises)
+  const plan = checkIn && needsEasing(checkIn) ? autoregulate(prepared, checkIn) : prepared
+  return { prepared, plan }
 }
 export function startWorkout(row: PlannedSession, prepared: SessionPlan, plan: SessionPlan, checkIn: CheckIn | null, now: Date, id: string = newId()): { workout: Upsertable<"workouts">; draft: ActiveWorkout; plannedRow: Upsertable<"planned_sessions"> } {
   return todo(row, prepared, plan, checkIn, now, id)
@@ -77,4 +82,4 @@ export const useActiveWorkout = create<ActiveWorkoutStore>()(
   persist((set) => ({ draft: null, set: (draft) => set({ draft }) }), { name: "forma-active-workout", storage: jsonStorage() }),
 )
 // keep unused imports referenced until their functions land
-void autoregulate; void needsEasing; void toPlannedRow; void toSessionPlan; void prepareSession; void activeProgram; void historyFor; void storedConfig
+void toPlannedRow

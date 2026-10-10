@@ -1,0 +1,11 @@
+{
+  "slug": "dumbbell-shoulder-press",
+  "duration": 2.4,
+  "loop": true,
+  "view": { "target": [0, 1.05, 0] },
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [-15, 0, 80], "rShoulder": [-15, 0, -80], "lElbow": [0, 0, 90], "rElbow": [0, 0, -90] } },
+    { "t": 0.5, "pose": { "lShoulder": [-10, 0, 170], "rShoulder": [-10, 0, -170] } },
+    { "t": 1, "pose": { "lShoulder": [-15, 0, 80], "rShoulder": [-15, 0, -80], "lElbow": [0, 0, 90], "rElbow": [0, 0, -90] } }
+  ]
+}

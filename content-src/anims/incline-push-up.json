@@ -1,0 +1,12 @@
+{
+  "slug": "incline-push-up",
+  "duration": 2.2,
+  "loop": true,
+  "view": { "target": [0.2, 0.6, 0] },
+  "prop": { "size": [0.36, 0.3, 0.6], "position": [0.42, 0.15, 0] },
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.28, "rot": [50, 90, 0] }, "lShoulder": [-50, 0, 10], "rShoulder": [-50, 0, -10], "lAnkle": [-25, 0, 0], "rAnkle": [-25, 0, 0], "neck": [-25, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.47, "rot": [58, 90, 0] }, "lShoulder": [12, 0, 52], "rShoulder": [12, 0, -52], "lElbow": [-95, 0, 0], "rElbow": [-95, 0, 0], "lAnkle": [-58, 0, 0], "rAnkle": [-58, 0, 0], "neck": [-25, 0, 0] } },
+    { "t": 1, "pose": { "root": { "y": -0.28, "rot": [50, 90, 0] }, "lShoulder": [-50, 0, 10], "rShoulder": [-50, 0, -10], "lAnkle": [-25, 0, 0], "rAnkle": [-25, 0, 0], "neck": [-25, 0, 0] } }
+  ]
+}

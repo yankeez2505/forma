@@ -1,0 +1,10 @@
+{
+  "slug": "lateral-raise",
+  "duration": 2.4,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [0, 0, 10], "rShoulder": [0, 0, -10], "lElbow": [-15, 0, 0], "rElbow": [-15, 0, 0] } },
+    { "t": 0.5, "pose": { "lShoulder": [-10, 0, 85], "rShoulder": [-10, 0, -85], "lElbow": [-15, 0, 0], "rElbow": [-15, 0, 0] } },
+    { "t": 1, "pose": { "lShoulder": [0, 0, 10], "rShoulder": [0, 0, -10], "lElbow": [-15, 0, 0], "rElbow": [-15, 0, 0] } }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "slug": "dumbbell-curl",
+  "duration": 2.4,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [0, 0, 5], "rShoulder": [0, 0, -5], "lElbow": [-10, 0, 0], "rElbow": [-10, 0, 0] } },
+    { "t": 0.5, "pose": { "lShoulder": [0, 0, 5], "rShoulder": [0, 0, -5], "lElbow": [-135, 0, 0], "rElbow": [-135, 0, 0] } },
+    { "t": 1, "pose": { "lShoulder": [0, 0, 5], "rShoulder": [0, 0, -5], "lElbow": [-10, 0, 0], "rElbow": [-10, 0, 0] } }
+  ]
+}

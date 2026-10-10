@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { emptyRows, useDb } from "./db"
-import { pullAll, pushPending } from "./sync"
+import { pullAll, pushPending, startSync } from "./sync"
 
 type Call = { table: string; rows: unknown[] }
 const makeFake = (opts: { fail?: boolean; server?: Record<string, unknown[]> } = {}) => {
@@ -116,5 +116,39 @@ describe("pushPending order and errors", () => {
     expect(useDb.getState().lastSyncError).toBe("x")
     await pushPending(makeFake().client)
     expect(useDb.getState().lastSyncError).toBeNull()
+  })
+})
+
+describe("startSync", () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+  it("retries a failed push at 2, 4, 8, 16 s and then waits for the next change", async () => {
+    vi.useFakeTimers()
+    vi.stubGlobal("window", { addEventListener: () => undefined, removeEventListener: () => undefined })
+    vi.stubGlobal("navigator", { onLine: true })
+    useDb.getState().adoptUser("11111111-2222-4333-8444-555555555555")
+    useDb.getState().upsert("tests", test("t1"))
+    let calls = 0
+    const client = {
+      from: () => ({
+        upsert: async () => {
+          calls++
+          return { error: { message: "x" } }
+        },
+      }),
+    } as never
+    const stop = startSync(client)
+    await vi.advanceTimersByTimeAsync(0)
+    expect(calls).toBe(1)
+    await vi.advanceTimersByTimeAsync(2_000)
+    expect(calls).toBe(2)
+    await vi.advanceTimersByTimeAsync(4_000)
+    expect(calls).toBe(3)
+    await vi.advanceTimersByTimeAsync(600_000)
+    expect(calls).toBe(5)
+    expect(useDb.getState().lastSyncError).toBe("x")
+    stop()
   })
 })

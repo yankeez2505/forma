@@ -82,24 +82,43 @@ export async function pullAll(client: SupabaseClient, db: Db = useDb): Promise<v
   db.getState().replaceAll(merged, s.pending.filter((k) => pending.has(k)))
 }
 
-/** Pushes on start, when back online and 1 s after new pending rows appear. Returns a stop function. */
+/** a failed pass retries at 2, 4, 8, 16 s, then waits for the next change or the online event */
+const RETRY_MS = 2000
+const MAX_RETRIES = 4
+
+/** Pushes on start, when back online and 1 s after new pending rows appear; failed pushes retry with backoff. Returns a stop function. */
 export function startSync(client: SupabaseClient, db: Db = useDb): () => void {
   let timer: ReturnType<typeof setTimeout> | undefined
+  let attempt = 0
+  const schedule = (ms: number) => {
+    clearTimeout(timer)
+    timer = setTimeout(run, ms)
+  }
   const run = () => {
     if (db.getState().userId === "local" || !navigator.onLine) return
-    pushPending(client, db).catch(() => undefined)
+    pushPending(client, db)
+      .catch((e: unknown) => db.getState().setSyncError(e instanceof Error ? e.message : String(e)))
+      .then(() => {
+        const s = db.getState()
+        if (!s.lastSyncError || s.pending.length === 0) attempt = 0
+        else if (attempt < MAX_RETRIES) schedule(RETRY_MS * 2 ** attempt++)
+      })
+  }
+  const fresh = () => {
+    attempt = 0
+    run()
   }
   const unsub = db.subscribe((s, prev) => {
     if (s.pending.length > prev.pending.length) {
-      clearTimeout(timer)
-      timer = setTimeout(run, 1000)
+      attempt = 0
+      schedule(1000)
     }
   })
-  window.addEventListener("online", run)
+  window.addEventListener("online", fresh)
   run()
   return () => {
     clearTimeout(timer)
-    window.removeEventListener("online", run)
+    window.removeEventListener("online", fresh)
     unsub()
   }
 }

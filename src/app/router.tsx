@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router"
 import { AuthPage } from "@/features/auth/AuthPage"
 import AppLayout from "./AppLayout"
 import CalendarPage from "@/features/calendar/CalendarPage"
+import CheckpointPage from "@/features/checkpoints/CheckpointPage"
 import ExercisePage from "@/features/exercises/ExercisePage"
 import ExercisesPage from "@/features/exercises/ExercisesPage"
 import NotFoundPage from "./pages/NotFoundPage"
@@ -21,6 +22,7 @@ export const router = createBrowserRouter(
       children: [
         { index: true, element: <TodayPage /> },
         { path: "calendar", element: <CalendarPage /> },
+        { path: "checkpoint", element: <CheckpointPage /> },
         { path: "exercises", element: <ExercisesPage /> },
         { path: "exercises/:slug", element: <ExercisePage /> },
         { path: "progress", element: <ProgressPage /> },

@@ -53,7 +53,22 @@ export function planForStart(rows: Rows, plannedId: string, checkIn: CheckIn | n
   return { prepared, plan }
 }
 export function startWorkout(row: PlannedSession, prepared: SessionPlan, plan: SessionPlan, checkIn: CheckIn | null, now: Date, id: string = newId()): { workout: Upsertable<"workouts">; draft: ActiveWorkout; plannedRow: Upsertable<"planned_sessions"> } {
-  return todo(row, prepared, plan, checkIn, now, id)
+  const startedAt = now.toISOString()
+  return {
+    workout: {
+      id,
+      planned_session_id: row.id,
+      started_at: startedAt,
+      finished_at: null,
+      pre_soreness: checkIn?.soreness ?? null,
+      pre_sleep: checkIn?.sleep ?? null,
+      pre_energy: checkIn?.energy ?? null,
+      rpe: null,
+      notes: null,
+    },
+    draft: { workoutId: id, plannedSessionId: row.id, plan, startedAt, sets: {}, done: [], restUntil: null },
+    plannedRow: toPlannedRow(prepared, row.program_id),
+  }
 }
 export function nextSet(d: ActiveWorkout): { slug: string; setNo: number } | undefined {
   return todo(d)
@@ -81,5 +96,3 @@ interface ActiveWorkoutStore {
 export const useActiveWorkout = create<ActiveWorkoutStore>()(
   persist((set) => ({ draft: null, set: (draft) => set({ draft }) }), { name: "forma-active-workout", storage: jsonStorage() }),
 )
-// keep unused imports referenced until their functions land
-void toPlannedRow

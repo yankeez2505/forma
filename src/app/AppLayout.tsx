@@ -1,11 +1,13 @@
 import { Link, Outlet, useLocation } from "react-router"
 import { Toaster } from "@/components/ui/sonner"
+import { useDb } from "@/lib/db"
 import { cn } from "@/lib/utils"
 import { UserRound } from "lucide-react"
 import { BottomNav } from "./BottomNav"
 
 export default function AppLayout() {
   const { pathname } = useLocation()
+  const dot = useDb((s) => s.pending.length > 0 || s.lastSyncError !== null)
   const bare = pathname.startsWith("/onboarding") || pathname.startsWith("/workout")
   return (
     <div className={cn("mx-auto min-h-svh max-w-md md:max-w-3xl", bare ? "pb-6" : "pb-20")}>
@@ -13,8 +15,9 @@ export default function AppLayout() {
         <Link to="/" className="text-lg font-semibold tracking-tight">
           Forma
         </Link>
-        <Link to="/profile" aria-label="Профиль" className="rounded-full p-2 hover:bg-accent">
+        <Link to="/profile" aria-label="Профиль" className="relative rounded-full p-2 hover:bg-accent">
           <UserRound className="size-5" />
+          {dot && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-destructive" />}
         </Link>
       </header>
       <Outlet />

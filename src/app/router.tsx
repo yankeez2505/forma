@@ -9,7 +9,7 @@ import NutritionPage from "./pages/NutritionPage"
 import OnboardingPage from "@/features/onboarding/OnboardingPage"
 import ProfilePage from "./pages/ProfilePage"
 import ProgressPage from "./pages/ProgressPage"
-import TodayPage from "./pages/TodayPage"
+import TodayPage from "@/features/today/TodayPage"
 import WorkoutPage from "@/features/workout/WorkoutPage"
 
 export const router = createBrowserRouter(

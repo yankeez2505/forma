@@ -15,7 +15,7 @@ const split = (key: string): [TableName, string] => {
 /** Upserts every pending row grouped by table; returns how many rows the server confirmed. */
 export async function pushPending(client: SupabaseClient, db: Db = useDb): Promise<number> {
   const s = db.getState()
-  const groups = new Map<TableName, { keys: string[]; rows: Row[] }>()
+  const groups = new Map<TableName, { keys: string[]; ids: string[]; rows: Row[] }>()
   for (const key of s.pending) {
     const [table, id] = split(key)
     const row = (s.rows[table] as Record<string, Row> | undefined)?.[id]
@@ -23,8 +23,9 @@ export async function pushPending(client: SupabaseClient, db: Db = useDb): Promi
       db.getState().markSynced([key])
       continue
     }
-    const g = groups.get(table) ?? { keys: [], rows: [] }
+    const g = groups.get(table) ?? { keys: [], ids: [], rows: [] }
     g.keys.push(key)
+    g.ids.push(id)
     g.rows.push(row)
     groups.set(table, g)
   }
@@ -32,7 +33,9 @@ export async function pushPending(client: SupabaseClient, db: Db = useDb): Promi
   for (const [table, g] of groups) {
     const { error } = await client.from(table).upsert(g.rows, { onConflict: "id" })
     if (error) continue
-    db.getState().markSynced(g.keys)
+    /** a row edited while its upsert was in flight stays pending: the server got the old version */
+    const now = db.getState().rows[table] as Record<string, Row>
+    db.getState().markSynced(g.keys.filter((_, i) => now[g.ids[i]] === g.rows[i]))
     n += g.rows.length
   }
   return n

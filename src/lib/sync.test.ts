@@ -73,3 +73,20 @@ describe("pullAll", () => {
     expect(useDb.getState().pending).toEqual(["tests:t1"])
   })
 })
+
+describe("pushPending while rows change", () => {
+  it("keeps a row pending when it is edited while its upsert is in flight", async () => {
+    useDb.getState().upsert("tests", test("t1"))
+    const client = {
+      from: () => ({
+        upsert: async () => {
+          useDb.getState().upsert("tests", { ...test("t1"), results: { pushups: 7, squats: 1, plank_s: 1 } })
+          return { error: null }
+        },
+      }),
+    } as never
+    expect(await pushPending(client)).toBe(1)
+    expect(useDb.getState().pending).toEqual(["tests:t1"])
+    expect(useDb.getState().rows.tests.t1.results.pushups).toBe(7)
+  })
+})

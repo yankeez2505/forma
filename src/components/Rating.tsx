@@ -9,12 +9,12 @@ interface RatingProps {
   labels?: [string, string]
 }
 
-/** a row of min…max buttons; the chosen one is filled */
+/** a full-width row of min…max buttons; the chosen one is filled */
 export function Rating({ value, onChange, min = 1, max = 5, labels }: RatingProps) {
   const values = Array.from({ length: max - min + 1 }, (_, i) => min + i)
   return (
     <div>
-      <div role="radiogroup" className="flex gap-2">
+      <div role="radiogroup" className="grid grid-flow-col auto-cols-fr gap-1.5">
         {values.map((v) => (
           <Button
             key={v}
@@ -22,7 +22,8 @@ export function Rating({ value, onChange, min = 1, max = 5, labels }: RatingProp
             role="radio"
             aria-checked={v === value}
             variant={v === value ? "default" : "outline"}
-            size="icon-lg"
+            size="lg"
+            className="w-full px-0"
             onClick={() => onChange(v)}
           >
             {v}
@@ -30,7 +31,7 @@ export function Rating({ value, onChange, min = 1, max = 5, labels }: RatingProp
         ))}
       </div>
       {labels && (
-        <div className="mt-1 flex justify-between text-xs text-muted-foreground" style={{ maxWidth: `${values.length * 2.25 + (values.length - 1) * 0.5}rem` }}>
+        <div className="mt-1 flex justify-between text-xs text-muted-foreground">
           <span>{labels[0]}</span>
           <span>{labels[1]}</span>
         </div>

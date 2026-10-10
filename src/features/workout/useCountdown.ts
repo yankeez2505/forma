@@ -15,3 +15,6 @@ export function useCountdown(until: number | null): number {
   const now = useNow(250)
   return until ? Math.max(0, Math.ceil((until - now) / 1000)) : 0
 }
+
+/** 90 → "01:30"; minutes are not capped */
+export const mmss = (totalS: number) => `${String(Math.floor(totalS / 60)).padStart(2, "0")}:${String(totalS % 60).padStart(2, "0")}`

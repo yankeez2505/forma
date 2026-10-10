@@ -12,8 +12,9 @@
 ## 2. Вход по коду (email OTP)
 
 1. **Authentication → Providers → Email**: включён.
-2. **Authentication → Email Templates → Magic Link**: заменить `{{ .ConfirmationURL }}` на `{{ .Token }}`.
+2. **Authentication → Email Templates**: в двух шаблонах — **Confirm signup** и **Magic Link** — заменить `{{ .ConfirmationURL }}` на `{{ .Token }}`.
    Тогда письмо содержит 6-значный код, а не ссылку. Приложение вводит код через `verifyOtp`.
+   Первое письмо новому адресу уходит по шаблону Confirm signup, поэтому без правки обоих первый вход придёт ссылкой.
 3. **Authentication → Settings**: срок жизни OTP (`Email OTP Expiration`) выставить 600 секунд.
 4. **Authentication → URL Configuration → Site URL**: `https://yankeez2505.github.io/forma/`.
 

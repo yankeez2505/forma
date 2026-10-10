@@ -70,16 +70,32 @@ export function startWorkout(row: PlannedSession, prepared: SessionPlan, plan: S
     plannedRow: toPlannedRow(prepared, row.program_id),
   }
 }
+const loggedExercises = (d: ActiveWorkout) => d.plan.exercises.filter((e) => LOGGED.includes(e.block))
+
+/** first set of the logged blocks, in plan order, that has no log yet */
 export function nextSet(d: ActiveWorkout): { slug: string; setNo: number } | undefined {
-  return todo(d)
+  for (const e of loggedExercises(d)) for (let n = 1; n <= e.sets; n++) if (!d.sets[setKey(e.slug, n)]) return { slug: e.slug, setNo: n }
+  return undefined
 }
 export function progress(d: ActiveWorkout): { done: number; total: number } {
-  return todo(d)
+  let done = 0
+  let total = 0
+  for (const e of loggedExercises(d)) for (let n = 1; n <= e.sets; n++) {
+    total++
+    if (d.sets[setKey(e.slug, n)]) done++
+  }
+  return { done, total }
 }
+/** records a set; rest starts only when another set is still ahead */
 export function logSet(d: ActiveWorkout, s: SetLog, nowMs: number): ActiveWorkout {
-  return todo(d, s, nowMs)
+  const next = { ...d, sets: { ...d.sets, [setKey(s.slug, s.setNo)]: s } }
+  const restS = d.plan.exercises.find((e) => e.slug === s.slug)?.restS ?? 0
+  return { ...next, restUntil: nextSet(next) && restS > 0 ? nowMs + restS * 1000 : null }
 }
-export const toggleDone = (d: ActiveWorkout, slug: string): ActiveWorkout => todo(d, slug)
+export const toggleDone = (d: ActiveWorkout, slug: string): ActiveWorkout => ({
+  ...d,
+  done: d.done.includes(slug) ? d.done.filter((x) => x !== slug) : [...d.done, slug],
+})
 export function completeWorkout(w: Workout, rpe: number | null, notes: string | null, now: Date): Upsertable<"workouts"> {
   return todo(w, rpe, notes, now)
 }

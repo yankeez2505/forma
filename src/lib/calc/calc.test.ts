@@ -1,5 +1,5 @@
 import { expect, it } from "vitest"
-import { bmi, bmr, navyBodyFat, targets, tdee } from "."
+import { bmi, bmr, navyBodyFat, rollingMean, targets, tdee } from "."
 
 it("bmr (Mifflin-St Jeor) rounds to a whole kcal", () => {
   expect(bmr({ sex: "male", weightKg: 80, heightCm: 180, age: 35 })).toBe(1755)
@@ -34,4 +34,27 @@ it("navyBodyFat is null when the log argument is not positive", () => {
 
 it("bmi with 1 decimal", () => {
   expect(bmi(80, 180)).toBe(24.7)
+})
+
+it("rollingMean averages the points of the previous 7 days, current day inclusive", () => {
+  const points = [
+    { date: "2026-10-01", value: 80 },
+    { date: "2026-10-03", value: 82 },
+    { date: "2026-10-10", value: 78 },
+  ]
+  expect(rollingMean(points)).toEqual([
+    { date: "2026-10-01", value: 80 },
+    { date: "2026-10-03", value: 81 },
+    { date: "2026-10-10", value: 78 },
+  ])
+})
+
+it("rollingMean sorts by date and rounds to 1 decimal", () => {
+  const points = [
+    { date: "2026-10-03", value: 79.9 },
+    { date: "2026-10-01", value: 80.3 },
+    { date: "2026-10-02", value: 81.2 },
+  ]
+  expect(rollingMean(points).map((p) => p.date)).toEqual(["2026-10-01", "2026-10-02", "2026-10-03"])
+  expect(rollingMean(points)[2]?.value).toBe(80.5)
 })

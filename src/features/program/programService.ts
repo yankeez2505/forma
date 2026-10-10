@@ -75,13 +75,21 @@ const toSetLog = (s: WorkoutSet): SetLog => ({
 })
 
 /** first unfinished session of the active program with date ≥ today */
-export function nextSession(_rows: Rows, _today: string): SessionPlan | undefined {
-  throw new Error("not implemented")
+export function nextSession(rows: Rows, today: string): SessionPlan | undefined {
+  const program = activeProgram(rows)
+  if (!program) return undefined
+  const done = finishedByPlanned(rows)
+  return plannedSessions(rows, program.id).find((s) => s.date >= today && !done.has(s.id))
 }
 
 /** an active program exists and every session is finished or the last date is past */
-export function blockComplete(_rows: Rows, _today: string): boolean {
-  throw new Error("not implemented")
+export function blockComplete(rows: Rows, today: string): boolean {
+  const program = activeProgram(rows)
+  if (!program) return false
+  const sessions = plannedSessions(rows, program.id)
+  const done = finishedByPlanned(rows)
+  const last = sessions.at(-1)
+  return sessions.every((s) => done.has(s.id)) || (last !== undefined && last.date < today)
 }
 
 export function buildProgram(cfg: StoredConfig, exercises: Exercise[], history: SessionLog[], id: string = newId()): ProgramRows {

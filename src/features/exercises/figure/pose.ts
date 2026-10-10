@@ -30,3 +30,19 @@ export function lerpPose(a: Pose, b: Pose, k: number): Pose {
   }
   return out
 }
+
+const smooth = (k: number) => k * k * (3 - 2 * k)
+
+/** Pose at timeS: loops over duration (or clamps when loop=false), smoothstep between neighbouring keys. */
+export function samplePose(anim: Anim, timeS: number): Pose {
+  const { duration, keys } = anim
+  const raw = timeS / duration
+  const t = anim.loop ? raw - Math.floor(raw) : Math.min(Math.max(raw, 0), 1)
+  let i = 0
+  while (i < keys.length - 1 && (keys[i + 1]?.t ?? Infinity) <= t) i++
+  const a = keys[i] ?? { t: 0, pose: {} }
+  const b = keys[i + 1] ?? a
+  const span = b.t - a.t
+  const k = span > 0 ? smooth(Math.min(Math.max((t - a.t) / span, 0), 1)) : 0
+  return lerpPose(a.pose, b.pose, k)
+}

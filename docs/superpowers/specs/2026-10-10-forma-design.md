@@ -40,7 +40,7 @@
 docs/superpowers/{specs,plans}/
 content-src/exercises.curated.json            # ручной слой: slug, sourceId, pattern, level, equipment, impact, contraindications, difficultyRank, timed, unilateral, anim
 content-src/anims/<slug>.json                 # позы для 3D-анимации
-scripts/build-exercises.ts                    # tsx + sharp + zod: free-exercise-db + curated → src/content + public/exercises/<slug>/{0,1}.webp
+scripts/build-exercises.ts                    # tsx + sharp + zod: free-exercise-db + curated → src/content + public/ex/<slug>/{0,1}.webp
 supabase/migrations/0001_init.sql
 src/app/            router, providers, layout с нижней навигацией
 src/components/ui/  shadcn

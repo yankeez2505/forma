@@ -52,7 +52,7 @@ export interface Exercise {
   anim: string | null
   primaryMuscles: Muscle[]
   secondaryMuscles: Muscle[]
-  /** "exercises/<slug>/0.webp" relative to the app base */
+  /** "ex/<slug>/0.webp" relative to the app base */
   images: string[]
   name: string
   cues: string[]

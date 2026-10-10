@@ -38,7 +38,7 @@ const pwa = VitePWA({
     runtimeCaching: [
       { urlPattern: /\.supabase\.co\//, handler: "NetworkOnly" },
       {
-        urlPattern: /\/forma\/exercises\/.*\.webp$/,
+        urlPattern: /\/forma\/ex\/.*\.webp$/,
         handler: "CacheFirst",
         options: {
           cacheName: "exercise-images",

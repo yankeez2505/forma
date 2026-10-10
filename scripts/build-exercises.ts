@@ -12,7 +12,7 @@ const CACHE = path.join(ROOT, "content-src", ".cache")
 const CURATED = path.join(ROOT, "content-src", "exercises.curated.json")
 const RU = path.join(ROOT, "content-src", "exercises.ru.json")
 const OUT_JSON = path.join(ROOT, "src", "content", "exercises.json")
-const OUT_IMG = path.join(ROOT, "public", "exercises")
+const OUT_IMG = path.join(ROOT, "public", "ex")
 /** equipment every home has: an exercise using only these counts as bodyweight */
 const HOME_FREE = new Set<EquipmentTag>(["mat", "wall", "chair"])
 
@@ -86,7 +86,7 @@ async function buildImages(slug: string, src: DbEntry | undefined): Promise<stri
       await mkdir(path.dirname(target), { recursive: true })
       await sharp(buf).resize({ width: 600 }).webp({ quality: 75 }).toFile(target)
     }
-    out.push(`exercises/${slug}/${i}.webp`)
+    out.push(`ex/${slug}/${i}.webp`)
   }
   return out
 }

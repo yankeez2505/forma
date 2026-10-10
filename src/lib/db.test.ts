@@ -54,3 +54,17 @@ it("replaceAll resets pending unless a queue is given", () => {
   useDb.getState().replaceAll(rows, ["tests:t1"])
   expect(useDb.getState().pending).toEqual(["tests:t1"])
 })
+
+it("adoptUser re-keys the profile row to the new user id and keeps other ids", () => {
+  const db = useDb.getState()
+  db.replaceAll(emptyRows())
+  db.upsert("profiles", { id: "local", sex: "male", birth_year: 1990, height_cm: 180, country: "BY", timezone: "Europe/Minsk", goal: "fat", experience: "some", days_per_week: 3, session_min: 30, activity_level: "light", injuries: [], equipment: ["mat"], figure: "male" })
+  db.upsert("body_metrics", { id: "m1", date: "2026-10-10", weight_kg: 80, waist_cm: null, neck_cm: null, hip_cm: null })
+  useDb.getState().adoptUser("11111111-2222-4333-8444-555555555555")
+  const s = useDb.getState()
+  expect(Object.keys(s.rows.profiles)).toEqual(["11111111-2222-4333-8444-555555555555"])
+  expect(s.rows.profiles["11111111-2222-4333-8444-555555555555"].user_id).toBe("11111111-2222-4333-8444-555555555555")
+  expect(s.rows.body_metrics.m1.user_id).toBe("11111111-2222-4333-8444-555555555555")
+  expect(s.pending).toContain("profiles:11111111-2222-4333-8444-555555555555")
+  expect(s.pending).not.toContain("profiles:local")
+})

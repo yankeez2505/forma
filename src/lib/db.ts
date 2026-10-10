@@ -74,8 +74,10 @@ export const useDb = create<DbState>()(
         const pending: string[] = []
         for (const t of TABLES) {
           for (const r of Object.values(s.rows[t])) {
-            ;(rows[t] as Record<string, unknown>)[r.id] = { ...r, user_id: userId }
-            pending.push(`${t}:${r.id}`)
+            /** profiles.id must equal auth.uid on the server; every other row keeps its client id */
+            const id = t === "profiles" ? userId : r.id
+            ;(rows[t] as Record<string, unknown>)[id] = { ...r, id, user_id: userId }
+            pending.push(`${t}:${id}`)
           }
         }
         set({ userId, rows, pending })

@@ -1,10 +1,10 @@
 import type { Exercise } from "@/content/types"
 import type { Rows, Upsertable } from "@/lib/db"
 import { newId } from "@/lib/id"
-import type { Program, Workout } from "@/lib/schema"
+import type { PlannedSession, Program, Workout, WorkoutSet } from "@/lib/schema"
 import { generateBlock } from "./engine/generateBlock"
-import type { SessionLog, SessionPlan, TestInput } from "./engine/types"
-import { toPlannedRow, type StoredConfig } from "./model"
+import type { SessionLog, SessionPlan, SetLog, TestInput } from "./engine/types"
+import { isoDate, toPlannedRow, toSessionPlan, type StoredConfig } from "./model"
 
 export interface ProgramRows {
   program: Upsertable<"programs">
@@ -13,24 +13,66 @@ export interface ProgramRows {
 
 export const storedConfig = (p: Program) => p.config as StoredConfig
 
-export function activeProgram(_rows: Rows): Program | undefined {
-  throw new Error("not implemented")
+export function activeProgram(rows: Rows): Program | undefined {
+  return Object.values(rows.programs).find((p) => p.active)
 }
 
 /** sessions of the current block only (date ≥ blockStart), by date ↑; no such program → [] */
-export function plannedSessions(_rows: Rows, _programId: string): SessionPlan[] {
-  throw new Error("not implemented")
+export function plannedSessions(rows: Rows, programId: string): SessionPlan[] {
+  const program = rows.programs[programId]
+  if (!program) return []
+  const from = storedConfig(program).blockStart
+  return Object.values(rows.planned_sessions)
+    .filter((s) => s.program_id === programId && s.date >= from)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(toSessionPlan)
 }
 
 /** finished workouts keyed by planned_session_id */
-export function finishedByPlanned(_rows: Rows): Map<string, Workout> {
-  throw new Error("not implemented")
+export function finishedByPlanned(rows: Rows): Map<string, Workout> {
+  const out = new Map<string, Workout>()
+  for (const w of Object.values(rows.workouts)) {
+    if (w.finished_at !== null && w.planned_session_id) out.set(w.planned_session_id, w)
+  }
+  return out
 }
 
 /** finished workouts as engine session logs, by date ↑ */
-export function historyFor(_rows: Rows): SessionLog[] {
-  throw new Error("not implemented")
+export function historyFor(rows: Rows): SessionLog[] {
+  const setsByWorkout = new Map<string, WorkoutSet[]>()
+  for (const s of Object.values(rows.workout_sets)) {
+    const list = setsByWorkout.get(s.workout_id) ?? []
+    list.push(s)
+    setsByWorkout.set(s.workout_id, list)
+  }
+  return Object.values(rows.workouts)
+    .filter((w) => w.finished_at !== null)
+    .map((w) => toSessionLog(w, setsByWorkout.get(w.id) ?? [], w.planned_session_id ? rows.planned_sessions[w.planned_session_id] : undefined))
+    .sort((a, b) => a.date.localeCompare(b.date))
 }
+
+function toSessionLog(w: Workout, sets: WorkoutSet[], planned: PlannedSession | undefined): SessionLog {
+  const plan = planned && toSessionPlan(planned)
+  return {
+    date: isoDate(w.started_at),
+    dayType: plan?.dayType,
+    preSoreness: w.pre_soreness ?? undefined,
+    preSleep: w.pre_sleep ?? undefined,
+    preEnergy: w.pre_energy ?? undefined,
+    rpe: w.rpe ?? undefined,
+    sets: [...sets].sort((a, b) => a.set_no - b.set_no).map(toSetLog),
+    planned: plan?.exercises,
+  }
+}
+
+const toSetLog = (s: WorkoutSet): SetLog => ({
+  slug: s.exercise_id,
+  setNo: s.set_no,
+  reps: s.reps ?? undefined,
+  durationS: s.duration_s ?? undefined,
+  weightKg: s.weight_kg ?? undefined,
+  rir: s.rir ?? undefined,
+})
 
 /** first unfinished session of the active program with date ≥ today */
 export function nextSession(_rows: Rows, _today: string): SessionPlan | undefined {

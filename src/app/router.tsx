@@ -10,6 +10,7 @@ import OnboardingPage from "@/features/onboarding/OnboardingPage"
 import ProfilePage from "./pages/ProfilePage"
 import ProgressPage from "./pages/ProgressPage"
 import TodayPage from "./pages/TodayPage"
+import WorkoutPage from "@/features/workout/WorkoutPage"
 
 export const router = createBrowserRouter(
   [
@@ -27,6 +28,7 @@ export const router = createBrowserRouter(
         { path: "profile", element: <ProfilePage /> },
         { path: "auth", element: <AuthPage /> },
         { path: "onboarding", element: <OnboardingPage /> },
+        { path: "workout/:id", element: <WorkoutPage /> },
         { path: "dev/preview", lazy: () => import("./pages/DevPreviewPage").then((m) => ({ Component: m.default })) },
         { path: "*", element: <NotFoundPage /> },
       ],

@@ -1,4 +1,4 @@
-import { menuById, type Food, type Macros, type Menu, type MenuDay, type MenuGoal, type MenuItem } from "./foods"
+import { CATEGORY_ORDER, menuById, type Food, type Macros, type Menu, type MenuDay, type MenuGoal, type MenuItem } from "./foods"
 import { bmr, targets, tdee, type Targets } from "@/lib/calc"
 import { parseISO } from "@/lib/dates"
 import type { Goal, Profile } from "@/lib/schema"
@@ -37,4 +37,18 @@ export function scaleMenu(menu: Menu, kcal: number): Menu {
   const scale = (g: number) => Math.max(5, Math.round((g * factor) / 5) * 5)
   const days = menu.days.map((d) => ({ meals: d.meals.map((m) => ({ name: m.name, items: m.items.map(([id, g]) => [id, scale(g)] as MenuItem) })) }))
   return { ...menu, baseKcal: kcal, days }
+}
+
+export interface ShoppingLine { food: Food; grams: number; units?: number }
+
+export function shoppingList(menu: Menu, foods: Map<string, Food>): ShoppingLine[] {
+  const grams = new Map<string, number>()
+  for (const day of menu.days) for (const meal of day.meals) for (const [id, g] of meal.items) grams.set(id, (grams.get(id) ?? 0) + g)
+  const lines: ShoppingLine[] = []
+  for (const [id, g] of grams) {
+    const food = foods.get(id)
+    if (!food) continue
+    lines.push(food.unit ? { food, grams: g, units: Math.ceil(g / food.unit.grams) } : { food, grams: g })
+  }
+  return lines.sort((a, b) => CATEGORY_ORDER.indexOf(a.food.category) - CATEGORY_ORDER.indexOf(b.food.category) || a.food.name.localeCompare(b.food.name, "ru"))
 }

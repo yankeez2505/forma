@@ -16,7 +16,7 @@ export interface DbState {
   remove(table: TableName, id: string): void
   markSynced(keys: string[]): void
   /** after a full pull from the server */
-  replaceAll(rows: Rows): void
+  replaceAll(rows: Rows, pending?: string[]): void
   adoptUser(userId: string): void
 }
 
@@ -61,8 +61,8 @@ export const useDb = create<DbState>()(
       markSynced(keys) {
         set((s) => ({ pending: s.pending.filter((k) => !keys.includes(k)) }))
       },
-      replaceAll(rows) {
-        set({ rows, pending: [] })
+      replaceAll(rows, pending) {
+        set({ rows, pending: pending ?? [] })
       },
       adoptUser(userId) {
         const s = get()

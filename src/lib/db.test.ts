@@ -45,3 +45,12 @@ describe("db store", () => {
     expect(selectRows("body_metrics")(useDb.getState()).map((r) => r.id)).toEqual(["m1"])
   })
 })
+
+it("replaceAll resets pending unless a queue is given", () => {
+  useDb.getState().upsert("tests", { id: "t1", date: "2026-10-10", kind: "baseline", results: { pushups: 1, squats: 1, plank_s: 1 } })
+  const rows = useDb.getState().rows
+  useDb.getState().replaceAll(rows)
+  expect(useDb.getState().pending).toEqual([])
+  useDb.getState().replaceAll(rows, ["tests:t1"])
+  expect(useDb.getState().pending).toEqual(["tests:t1"])
+})

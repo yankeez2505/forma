@@ -46,3 +46,20 @@ export function samplePose(anim: Anim, timeS: number): Pose {
   const k = span > 0 ? smooth(Math.min(Math.max((t - a.t) / span, 0), 1)) : 0
   return lerpPose(a.pose, b.pose, k)
 }
+
+const SWAP: Partial<Record<Joint, Joint>> = {
+  lShoulder: "rShoulder", rShoulder: "lShoulder", lElbow: "rElbow", rElbow: "lElbow", lWrist: "rWrist", rWrist: "lWrist",
+  lHip: "rHip", rHip: "lHip", lKnee: "rKnee", rKnee: "lKnee", lAnkle: "rAnkle", rAnkle: "lAnkle",
+}
+const neg = (v: number) => (v === 0 ? 0 : -v)
+const flip = (e: Euler3): Euler3 => [e[0], neg(e[1]), neg(e[2])]
+
+/** Left/right mirror across the sagittal plane: sides swap, y/z rotations change sign. */
+export function mirrorPose(p: Pose): Pose {
+  const out: Pose = { root: { y: p.root?.y ?? 0, rot: flip(p.root?.rot ?? ZERO) } }
+  for (const j of JOINTS) {
+    const e = p[j]
+    if (e) out[SWAP[j] ?? j] = flip(e)
+  }
+  return out
+}

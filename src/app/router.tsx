@@ -8,7 +8,7 @@ import NotFoundPage from "./pages/NotFoundPage"
 import NutritionPage from "./pages/NutritionPage"
 import OnboardingPage from "@/features/onboarding/OnboardingPage"
 import ProfilePage from "./pages/ProfilePage"
-import ProgressPage from "./pages/ProgressPage"
+import ProgressPage from "@/features/analytics/ProgressPage"
 import TodayPage from "@/features/today/TodayPage"
 import WorkoutPage from "@/features/workout/WorkoutPage"
 

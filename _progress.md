@@ -1,0 +1,28 @@
+# Forma — прогресс (удалить по завершении v1)
+
+Спецификация: docs/superpowers/specs/2026-10-10-forma-design.md
+План реализации: docs/superpowers/plans/2026-10-10-forma-foundation.md (часть 1), затем 2026-10-10-forma-screens.md (часть 2)
+Репо: https://github.com/yankeez2505/forma → https://yankeez2505.github.io/forma/
+
+## Статус этапов
+- [x] Спецификация, git init, репо, Pages (build_type=workflow)
+- [ ] 0 Скелет
+- [ ] 1 Данные (локальные сторы, SQL, OTP + sync за флагом, keep-alive)
+- [ ] 2 Контент (упражнения)
+- [ ] 3 3D-персонаж
+- [ ] 4 calc + engine (TDD)
+- [ ] 5 Онбординг
+- [ ] 6 Тренировка
+- [ ] 7 Календарь
+- [ ] 8 Метрики + аналитика
+- [ ] 9 Чекпоинты
+- [ ] 10 Питание
+- [ ] 11 Полировка
+
+## Блокеры / ждём Артёма
+- Supabase URL + anon key (без них — локальный режим)
+- Решение по реалистичным 3D (Mixamo / пак)
+- Переименовать папку traning → forma при закрытом VS Code
+
+## Заметки
+- Папка проекта `D:\Vibe Design\traning`, cwd не менять (`cd` в Bash меняет рабочую папку сессии — использовать абсолютные пути).

@@ -1,8 +1,8 @@
 import { toISODate } from "@/lib/dates"
 import type { Upsertable } from "@/lib/db"
-import type { PlannedSession, TestRow } from "@/lib/schema"
+import type { PlannedSession, Profile, TestRow } from "@/lib/schema"
 import { hashToUuid } from "./engine/seed"
-import type { PlannedExercise, ProgramConfig, SessionPlan } from "./engine/types"
+import type { PlannedExercise, ProfileInput, ProgramConfig, SessionPlan, TestInput } from "./engine/types"
 
 /** programs.config: the engine config plus where the current block sits */
 export interface StoredConfig extends ProgramConfig {
@@ -29,3 +29,20 @@ export function toSessionPlan(row: PlannedSession): SessionPlan {
 
 /** local calendar day of an ISO timestamp */
 export const isoDate = (timestamp: string) => toISODate(new Date(timestamp))
+
+/** block 0 from a fresh survey: the baseline doubles as the latest test */
+export function newConfig(profile: ProfileInput, baseline: TestInput, startDate: string, seed: string): StoredConfig {
+  return { profile, baseline, latestTest: baseline, startDate, seed, generatorVersion: 1, blockIndex: 0, blockStart: startDate }
+}
+
+/** Profile row → the engine's ProfileInput */
+export const profileInput = (p: Pick<Profile, "sex" | "birth_year" | "goal" | "experience" | "days_per_week" | "session_min" | "injuries" | "equipment">): ProfileInput => ({
+  sex: p.sex,
+  birth_year: p.birth_year,
+  goal: p.goal,
+  experience: p.experience,
+  days_per_week: p.days_per_week,
+  session_min: p.session_min,
+  injuries: p.injuries,
+  equipment: p.equipment,
+})

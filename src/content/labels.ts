@@ -1,4 +1,4 @@
-import type { EquipmentTag } from "@/lib/schema"
+import type { ActivityLevel, EquipmentTag, Experience, Goal, InjuryTag } from "@/lib/schema"
 import type { Pattern } from "./types"
 
 export const PATTERN_RU: Record<Pattern, string> = {
@@ -28,3 +28,8 @@ export const EQUIPMENT_RU: Record<EquipmentTag, string> = {
   wall: "Стена",
   bar: "Турник",
 }
+
+export const GOAL_RU: Record<Goal, string> = { fat: "Сжечь жир", muscle: "Набрать массу", tone: "Тонус" }
+export const EXPERIENCE_RU: Record<Experience, string> = { none: "Не тренировался", some: "Иногда", regular: "Регулярно" }
+export const ACTIVITY_RU: Record<ActivityLevel, string> = { sedentary: "Сидячая", light: "Лёгкая", moderate: "Средняя", high: "Высокая" }
+export const INJURY_RU: Record<InjuryTag, string> = { ankle: "Голеностоп", knee: "Колено", lower_back: "Поясница", shoulder: "Плечо", wrist: "Запястье" }

@@ -1,0 +1,10 @@
+{
+  "slug": "dumbbell-squat",
+  "duration": 2.8,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [0, 0, 6], "rShoulder": [0, 0, -6], "lElbow": [-12, 0, 0], "rElbow": [-12, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.35 }, "spine": [20, 0, 0], "lHip": [-75, 0, 8], "rHip": [-75, 0, -8], "lKnee": [90, 0, 0], "rKnee": [90, 0, 0], "lAnkle": [-15, 0, 0], "rAnkle": [-15, 0, 0], "lShoulder": [-20, 0, 6], "rShoulder": [-20, 0, -6], "lElbow": [-12, 0, 0], "rElbow": [-12, 0, 0] } },
+    { "t": 1, "pose": { "lShoulder": [0, 0, 6], "rShoulder": [0, 0, -6], "lElbow": [-12, 0, 0], "rElbow": [-12, 0, 0] } }
+  ]
+}

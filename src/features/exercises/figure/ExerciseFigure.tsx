@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Canvas } from "@react-three/fiber"
-import { ContactShadows, OrbitControls } from "@react-three/drei"
+import { ContactShadows, OrbitControls, RoundedBox } from "@react-three/drei"
 import { Pause, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ANIMS } from "@/content/anims"
@@ -29,6 +29,11 @@ export function ExerciseFigure({ anim: animId, figure = "male" }: { anim: string
           <ambientLight intensity={0.6} />
           <directionalLight position={[3, 5, 2]} intensity={1.2} />
           <Figure preset={BODY[sex]} anim={anim} playing={playing} seek={seek} />
+          {anim?.prop && (
+            <RoundedBox args={anim.prop.size} radius={0.02} position={anim.prop.position}>
+              <meshStandardMaterial color="#a1a1aa" roughness={0.9} />
+            </RoundedBox>
+          )}
           <ContactShadows opacity={0.4} scale={4} blur={2.2} far={1.2} resolution={256} />
           <OrbitControls
             key={anim?.slug ?? "rest"}

@@ -14,6 +14,8 @@ export interface Anim {
   keys: AnimKey[]
   /** optional camera aim for lying exercises */
   view?: { target: [number, number, number] }
+  /** optional support box (bench, table): size and centre in metres */
+  prop?: { size: [number, number, number]; position: [number, number, number] }
 }
 
 export const JOINTS: Joint[] = [

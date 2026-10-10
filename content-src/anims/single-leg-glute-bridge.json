@@ -1,0 +1,11 @@
+{
+  "slug": "single-leg-glute-bridge",
+  "duration": 3,
+  "loop": true,
+  "view": { "target": [0, 0.3, 0] },
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.86, "rot": [-90, -90, 0] }, "lHip": [-50, 0, 0], "lKnee": [110, 0, 0], "lAnkle": [30, 0, 0], "rHip": [-40, 0, 0], "lShoulder": [8, 0, 10], "rShoulder": [8, 0, -10] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.64, "rot": [-110, -90, 0] }, "chest": [12, 0, 0], "lKnee": [96, 0, 0], "lAnkle": [14, 0, 0], "rHip": [-20, 0, 0], "lShoulder": [24, 0, 10], "rShoulder": [24, 0, -10] } },
+    { "t": 1, "pose": { "root": { "y": -0.86, "rot": [-90, -90, 0] }, "lHip": [-50, 0, 0], "lKnee": [110, 0, 0], "lAnkle": [30, 0, 0], "rHip": [-40, 0, 0], "lShoulder": [8, 0, 10], "rShoulder": [8, 0, -10] } }
+  ]
+}

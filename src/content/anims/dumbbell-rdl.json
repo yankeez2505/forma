@@ -1,0 +1,10 @@
+{
+  "slug": "dumbbell-rdl",
+  "duration": 3,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lKnee": [10, 0, 0], "rKnee": [10, 0, 0], "lAnkle": [-10, 0, 0], "rAnkle": [-10, 0, 0], "lShoulder": [0, 0, 6], "rShoulder": [0, 0, -6] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.02, "rot": [70, 0, 0] }, "lHip": [-70, 0, 0], "rHip": [-70, 0, 0], "lKnee": [15, 0, 0], "rKnee": [15, 0, 0], "lAnkle": [-15, 0, 0], "rAnkle": [-15, 0, 0], "lShoulder": [-70, 0, 6], "rShoulder": [-70, 0, -6], "neck": [-15, 0, 0] } },
+    { "t": 1, "pose": { "lKnee": [10, 0, 0], "rKnee": [10, 0, 0], "lAnkle": [-10, 0, 0], "rAnkle": [-10, 0, 0], "lShoulder": [0, 0, 6], "rShoulder": [0, 0, -6] } }
+  ]
+}

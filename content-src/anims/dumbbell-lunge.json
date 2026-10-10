@@ -1,0 +1,10 @@
+{
+  "slug": "dumbbell-lunge",
+  "duration": 3,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [0, 0, 6], "rShoulder": [0, 0, -6], "lElbow": [-12, 0, 0], "rElbow": [-12, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.49 }, "spine": [10, 0, 0], "lHip": [-87, 0, 0], "lKnee": [119, 0, 0], "lAnkle": [-32, 0, 0], "rHip": [26, 0, 0], "rKnee": [76, 0, 0], "rAnkle": [-67, 0, 0], "lShoulder": [-10, 0, 6], "rShoulder": [-10, 0, -6], "lElbow": [-12, 0, 0], "rElbow": [-12, 0, 0] } },
+    { "t": 1, "pose": { "lShoulder": [0, 0, 6], "rShoulder": [0, 0, -6], "lElbow": [-12, 0, 0], "rElbow": [-12, 0, 0] } }
+  ]
+}

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router"
 import { AuthPage } from "@/features/auth/AuthPage"
 import AppLayout from "./AppLayout"
-import CalendarPage from "./pages/CalendarPage"
+import CalendarPage from "@/features/calendar/CalendarPage"
 import ExercisePage from "@/features/exercises/ExercisePage"
 import ExercisesPage from "@/features/exercises/ExercisesPage"
 import NotFoundPage from "./pages/NotFoundPage"

@@ -17,7 +17,7 @@ const FULLBODY: Template = {
       dayType: "B",
       slots: [
         { pattern: "hinge", sets: 3 },
-        { pattern: "push_v", sets: 2 },
+        { pattern: "push_v", fallback: "push_h", sets: 2 },
         { pattern: "pull_v", fallback: "pull_h", sets: 2 },
         { pattern: "lunge", sets: 2 },
         { pattern: "calf", sets: 2 },
@@ -35,7 +35,7 @@ const UPPERLOWER: Template = {
       slots: [
         { pattern: "push_h", sets: 3 },
         { pattern: "pull_h", sets: 3 },
-        { pattern: "push_v", sets: 2 },
+        { pattern: "push_v", fallback: "push_h", sets: 2 },
         { pattern: "pull_v", fallback: "pull_h", sets: 2 },
         { pattern: "arms", sets: 1 },
       ],

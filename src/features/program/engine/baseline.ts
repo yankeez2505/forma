@@ -26,11 +26,11 @@ export function startDuration(test: TestInput, slug: string): number {
   return Math.min(60, Math.max(15, Math.round((test.plank_s * 0.6) / 5) * 5))
 }
 
-/** seeded choice among the first two candidates at or above minRank; none that high → the hardest available */
-export function pickExercise(candidates: Exercise[], minRank: number, rng: () => number): Exercise | undefined {
+/** seeded choice among the first `variety` candidates at or above minRank; none that high → the hardest available */
+export function pickExercise(candidates: Exercise[], minRank: number, rng: () => number, variety = 2): Exercise | undefined {
   if (candidates.length === 0) return undefined
   const eligible = candidates.filter((e) => e.difficultyRank >= minRank)
   if (eligible.length === 0) return candidates[candidates.length - 1]
-  const choices = eligible.slice(0, 2)
+  const choices = eligible.slice(0, variety)
   return choices[Math.floor(rng() * choices.length)]
 }

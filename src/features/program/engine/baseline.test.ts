@@ -32,4 +32,5 @@ it("pickExercise chooses among the first two at or above minRank, else the harde
   expect(pickExercise(squats, 2, () => 0.99)?.slug).toBe("dumbbell-squat")
   expect(pickExercise(squats, 9, () => 0)?.slug).toBe("plie-dumbbell-squat")
   expect(pickExercise([], 1, () => 0)).toBeUndefined()
+  expect(pickExercise(squats, 1, () => 0.99, 1)?.slug).toBe("bodyweight-squat")
 })

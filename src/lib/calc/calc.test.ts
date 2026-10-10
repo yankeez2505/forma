@@ -1,5 +1,5 @@
 import { expect, it } from "vitest"
-import { bmr, targets, tdee } from "."
+import { bmr, navyBodyFat, targets, tdee } from "."
 
 it("bmr (Mifflin-St Jeor) rounds to a whole kcal", () => {
   expect(bmr({ sex: "male", weightKg: 80, heightCm: 180, age: 35 })).toBe(1755)
@@ -17,4 +17,17 @@ it("targets for fat loss: −18 % kcal, 2 g/kg protein, 0.9 g/kg fat, carbs are 
 
 it("targets never drop carbs below 50 g", () => {
   expect(targets({ tdee: 1500, goal: "muscle", weightKg: 100 }).carbs_g).toBe(50)
+})
+
+it("navyBodyFat male ≈ 18.4 %", () => {
+  expect(navyBodyFat({ sex: "male", heightCm: 180, waistCm: 90, neckCm: 40 })).toBeCloseTo(18.4, 1)
+})
+
+it("navyBodyFat female needs hipCm", () => {
+  expect(navyBodyFat({ sex: "female", heightCm: 165, waistCm: 70, neckCm: 32 })).toBeNull()
+  expect(navyBodyFat({ sex: "female", heightCm: 165, waistCm: 70, neckCm: 32, hipCm: 95 })).toBeCloseTo(24.9, 1)
+})
+
+it("navyBodyFat is null when the log argument is not positive", () => {
+  expect(navyBodyFat({ sex: "male", heightCm: 180, waistCm: 38, neckCm: 40 })).toBeNull()
 })

@@ -2,7 +2,7 @@ import { expect, it } from "vitest"
 
 import { finishSession, programRows } from "@/features/program/engine/fixtures/rows"
 import { plannedSessions } from "@/features/program/programService"
-import { dayStatus, daySessions, monthGrid, weekProgress, weekStreak } from "./calendar"
+import { dayStatus, daySessions, monthGrid, weekProgress, weekStreak, workoutSummary } from "./calendar"
 
 it("monthGrid covers a month in Monday-based weeks", () => {
   const g = monthGrid("2026-10-01") // Thursday start → 5 rows
@@ -44,4 +44,29 @@ it("weekProgress and weekStreak", () => {
   for (const x of s.slice(3, 6)) finishSession(rows, x.id, `${x.date}T18:00:00.000Z`, [])
   expect(weekStreak(rows, "2026-10-27")).toBe(2)
   expect(weekStreak(rows, "2026-10-11")).toBe(0) // the week before the program has no sessions
+})
+
+it("workoutSummary groups sets by exercise in order", () => {
+  const rows = programRows()
+  const s = plannedSessions(rows, "p1")
+  finishSession(
+    rows,
+    s[0].id,
+    "2026-10-12T18:00:00.000Z",
+    [
+      { slug: "push-up", reps: 10 },
+      { slug: "squat", reps: 15, weightKg: 10 },
+      { slug: "push-up", reps: 8 },
+    ],
+    7,
+  )
+  rows.workouts[`w-${s[0].id}`].finished_at = "2026-10-12T18:31:00.000Z"
+  const sum = workoutSummary(rows, `w-${s[0].id}`)!
+  expect(sum).toMatchObject({ startedAt: "2026-10-12T18:00:00.000Z", durationMin: 31, rpe: 7, notes: null })
+  expect(sum.sets).toEqual([
+    { slug: "push-up", setNo: 1, reps: 10, durationS: null, weightKg: null },
+    { slug: "push-up", setNo: 2, reps: 8, durationS: null, weightKg: null },
+    { slug: "squat", setNo: 1, reps: 15, durationS: null, weightKg: 10 },
+  ])
+  expect(workoutSummary(rows, "nope")).toBeUndefined()
 })

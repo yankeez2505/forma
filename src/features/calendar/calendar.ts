@@ -62,3 +62,28 @@ export function weekStreak(rows: Rows, today: string): number {
   for (let week = complete(current) ? current : addDays(current, -7); complete(week); week = addDays(week, -7)) streak++
   return streak
 }
+
+export interface WorkoutSummary {
+  startedAt: string
+  durationMin: number | null
+  rpe: number | null
+  notes: string | null
+  sets: { slug: string; setNo: number; reps: number | null; durationS: number | null; weightKg: number | null }[]
+}
+
+/** a workout with its sets grouped by exercise in first-logged order, then by set number */
+export function workoutSummary(rows: Rows, workoutId: string): WorkoutSummary | undefined {
+  const w = rows.workouts[workoutId]
+  if (!w) return undefined
+  const sets = Object.values(rows.workout_sets).filter((s) => s.workout_id === workoutId)
+  const order = [...new Set(sets.map((s) => s.exercise_id))]
+  sets.sort((a, b) => order.indexOf(a.exercise_id) - order.indexOf(b.exercise_id) || a.set_no - b.set_no)
+  const durationMin = w.finished_at ? Math.round((Date.parse(w.finished_at) - Date.parse(w.started_at)) / 60_000) : null
+  return {
+    startedAt: w.started_at,
+    durationMin,
+    rpe: w.rpe,
+    notes: w.notes,
+    sets: sets.map((s) => ({ slug: s.exercise_id, setNo: s.set_no, reps: s.reps, durationS: s.duration_s, weightKg: s.weight_kg })),
+  }
+}

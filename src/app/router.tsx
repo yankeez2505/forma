@@ -15,6 +15,7 @@ export const router = createBrowserRouter(
     {
       path: "/",
       element: <AppLayout />,
+      hydrateFallbackElement: <div className="p-4 text-muted-foreground">Загрузка…</div>,
       children: [
         { index: true, element: <TodayPage /> },
         { path: "calendar", element: <CalendarPage /> },
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
         { path: "nutrition", element: <NutritionPage /> },
         { path: "profile", element: <ProfilePage /> },
         { path: "auth", element: <AuthPage /> },
+        { path: "dev/preview", lazy: () => import("./pages/DevPreviewPage").then((m) => ({ Component: m.default })) },
         { path: "*", element: <NotFoundPage /> },
       ],
     },

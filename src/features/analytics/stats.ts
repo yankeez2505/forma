@@ -1,9 +1,10 @@
 import type { Exercise, Muscle } from "@/content/types"
 import { weekProgress } from "@/features/calendar/calendar"
 import { isoDate } from "@/features/program/model"
-import { rollingMean, type Point } from "@/lib/calc"
+import { navyBodyFat, rollingMean, type Point } from "@/lib/calc"
 import { addDays, startOfWeek } from "@/lib/dates"
 import type { Rows } from "@/lib/db"
+import type { Profile, TestRow } from "@/lib/schema"
 
 export type MuscleGroup = "chest" | "back" | "shoulders" | "arms" | "legs" | "glutes" | "core" | "calves"
 
@@ -85,4 +86,19 @@ export function planVsFact(rows: Rows, today: string, weeks = 8): { week: string
     const { done, total } = weekProgress(rows, week)
     return { week, planned: total, done }
   })
+}
+
+export function testSeries(rows: Rows): { date: string; kind: TestRow["kind"]; pushups: number; squats: number; plank_s: number }[] {
+  return Object.values(rows.tests)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map((t) => ({ date: t.date, kind: t.kind, pushups: t.results.pushups, squats: t.results.squats, plank_s: t.results.plank_s }))
+}
+
+/** body fat from the latest metric that has waist and neck (and hip for women); null when there is none */
+export function bodyFatNow(rows: Rows, profile: Pick<Profile, "sex" | "height_cm">): number | null {
+  const latest = Object.values(rows.body_metrics)
+    .filter((m) => m.waist_cm !== null && m.neck_cm !== null && (profile.sex !== "female" || m.hip_cm !== null))
+    .sort((a, b) => b.date.localeCompare(a.date))[0]
+  if (!latest || latest.waist_cm === null || latest.neck_cm === null) return null
+  return navyBodyFat({ sex: profile.sex, heightCm: profile.height_cm, waistCm: latest.waist_cm, neckCm: latest.neck_cm, hipCm: latest.hip_cm ?? undefined })
 }

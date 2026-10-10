@@ -1,9 +1,10 @@
 import { expect, it } from "vitest"
 import { all as exercises, bySlug } from "@/features/exercises/useExercises"
-import { finishSession, programRows } from "@/features/program/engine/fixtures/rows"
+import { finishSession, ownerProfileRow, programRows } from "@/features/program/engine/fixtures/rows"
 import { plannedSessions } from "@/features/program/programService"
+import { navyBodyFat } from "@/lib/calc"
 import { emptyRows } from "@/lib/db"
-import { GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, planVsFact, weeklySetsByGroup, weightTrend } from "./stats"
+import { bodyFatNow, GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, planVsFact, testSeries, weeklySetsByGroup, weightTrend } from "./stats"
 
 const metric = (id: string, date: string, weight_kg: number | null, waist_cm: number | null = null, neck_cm: number | null = null, hip_cm: number | null = null) =>
   ({ id, user_id: "local", created_at: "", updated_at: "", date, weight_kg, waist_cm, neck_cm, hip_cm })
@@ -46,4 +47,17 @@ it("planVsFact returns the last weeks ending with the current one", () => {
     { week: "2026-10-12", planned: 3, done: 1 },
     { week: "2026-10-19", planned: 3, done: 0 },
   ])
+})
+it("testSeries sorts by date; bodyFatNow needs waist and neck, plus hip for women", () => {
+  const rows = emptyRows()
+  rows.tests.t2 = { id: "t2", user_id: "local", created_at: "", updated_at: "", date: "2026-11-09", kind: "checkpoint", results: { pushups: 18, squats: 30, plank_s: 60 } }
+  rows.tests.t1 = { id: "t1", user_id: "local", created_at: "", updated_at: "", date: "2026-10-12", kind: "baseline", results: { pushups: 12, squats: 25, plank_s: 40, ankle: { knee_to_wall_diff_cm: 2, single_leg_calf_raises: 10, balance_eyes_closed_s: 10 } } }
+  expect(testSeries(rows)).toEqual([{ date: "2026-10-12", kind: "baseline", pushups: 12, squats: 25, plank_s: 40 }, { date: "2026-11-09", kind: "checkpoint", pushups: 18, squats: 30, plank_s: 60 }])
+  expect(bodyFatNow(rows, ownerProfileRow)).toBeNull()
+  rows.body_metrics.a = metric("a", "2026-10-12", 82, 90, 40)
+  rows.body_metrics.b = metric("b", "2026-10-14", 81)
+  expect(bodyFatNow(rows, ownerProfileRow)).toBeCloseTo(navyBodyFat({ sex: "male", heightCm: 180, waistCm: 90, neckCm: 40 })!, 5)
+  expect(bodyFatNow(rows, { sex: "female", height_cm: 165 })).toBeNull()
+  rows.body_metrics.a.hip_cm = 100
+  expect(bodyFatNow(rows, { sex: "female", height_cm: 165 })).not.toBeNull()
 })

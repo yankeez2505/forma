@@ -42,5 +42,93 @@
       { "name": "Перекус", "items": [["kefir-1", 250], ["crispbread-rye", 20], ["cheese-hard", 20]] },
       { "name": "Ужин", "items": [["turkey-thigh", 150], ["zucchini", 200], ["bell-pepper", 100], ["oil-olive", 7], ["tvorog-5", 100]] }
     ] }
+  ] },
+  { "id": "maintenance", "title": "Поддержка", "baseKcal": 2200, "days": [
+    { "meals": [
+      { "name": "Завтрак", "items": [["oats", 70], ["milk-2", 250], ["egg", 110], ["banana", 120], ["walnuts", 15]] },
+      { "name": "Обед", "items": [["buckwheat", 80], ["chicken-thigh", 150], ["cabbage", 150], ["carrot", 50], ["oil-sunflower", 10], ["bread-rye", 35]] },
+      { "name": "Перекус", "items": [["tvorog-5", 150], ["yogurt-natural", 150], ["apple", 150]] },
+      { "name": "Ужин", "items": [["pollock", 200], ["potato", 250], ["cucumber", 100], ["tomato", 100], ["smetana-15", 20], ["oil-olive", 5]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["egg", 165], ["cheese-hard", 30], ["bread-wholegrain", 70], ["tomato", 120], ["butter", 10], ["kefir-3", 250]] },
+      { "name": "Обед", "items": [["rice-white", 70], ["turkey-breast", 150], ["broccoli", 150], ["bell-pepper", 100], ["oil-olive", 10]] },
+      { "name": "Перекус", "items": [["yogurt-natural", 200], ["muesli", 40], ["pear", 160]] },
+      { "name": "Ужин", "items": [["beef-lean", 150], ["barley-pearl", 60], ["beet", 150], ["herbs", 20], ["oil-sunflower", 7], ["tvorog-5", 100]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["millet", 60], ["milk-2", 250], ["pumpkin", 100], ["butter", 10], ["egg", 110], ["honey", 15]] },
+      { "name": "Обед", "items": [["pasta-durum", 80], ["ground-beef", 150], ["tomato-paste", 30], ["onion", 50], ["zucchini", 150], ["cheese-hard", 20]] },
+      { "name": "Перекус", "items": [["kefir-1", 250], ["crispbread-rye", 30], ["peanut-butter", 15], ["banana", 120]] },
+      { "name": "Ужин", "items": [["cod", 200], ["cauliflower", 200], ["green-beans", 100], ["oil-olive", 7], ["tvorog-0", 150]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["oats", 60], ["kefir-1", 250], ["whey-protein", 30], ["blueberry", 100], ["flax-seeds", 10]] },
+      { "name": "Обед", "items": [["barley-pearl", 60], ["beef-liver", 150], ["onion", 50], ["smetana-15", 30], ["cucumber", 100], ["tomato", 100], ["oil-sunflower", 7]] },
+      { "name": "Перекус", "items": [["tvorog-5", 200], ["smetana-15", 20], ["apple", 150]] },
+      { "name": "Ужин", "items": [["potato", 250], ["herring-salted", 100], ["sauerkraut", 150], ["onion", 30], ["beet", 100], ["oil-sunflower", 10], ["bread-rye", 35]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["tvorog-9", 150], ["yogurt-natural", 150], ["muesli", 50], ["strawberry", 100], ["honey", 10]] },
+      { "name": "Обед", "items": [["bulgur", 80], ["pork-loin", 150], ["cabbage", 150], ["carrot", 50], ["oil-sunflower", 10], ["bread-wholegrain", 35]] },
+      { "name": "Перекус", "items": [["egg", 110], ["cucumber", 120], ["crispbread-rye", 20], ["kefir-1", 200]] },
+      { "name": "Ужин", "items": [["trout", 180], ["potato", 200], ["lettuce", 100], ["tomato", 100], ["oil-olive", 7], ["lemon", 20]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["buckwheat", 70], ["milk-2", 250], ["egg", 110], ["butter", 10], ["orange", 150]] },
+      { "name": "Обед", "items": [["rice-white", 70], ["chicken-drumstick", 180], ["onion", 50], ["mushrooms", 100], ["cucumber", 100], ["tomato", 100], ["oil-sunflower", 7]] },
+      { "name": "Перекус", "items": [["kefir-3", 250], ["banana", 120], ["peanuts", 20]] },
+      { "name": "Ужин", "items": [["turkey-thigh", 150], ["lentils", 50], ["bell-pepper", 100], ["zucchini", 150], ["oil-olive", 7], ["tvorog-5", 100]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["oats", 60], ["milk-1", 250], ["tvorog-5", 100], ["raspberry", 100], ["almonds", 15], ["honey", 10]] },
+      { "name": "Обед", "items": [["pasta-durum", 70], ["shrimp", 150], ["garlic", 5], ["oil-olive", 10], ["tomato", 150], ["lettuce", 50], ["cheese-hard", 20]] },
+      { "name": "Перекус", "items": [["egg", 110], ["bread-rye", 35], ["cheese-brynza", 30], ["cucumber", 100]] },
+      { "name": "Ужин", "items": [["beef-lean", 150], ["buckwheat", 60], ["beet", 150], ["sauerkraut", 100], ["oil-sunflower", 7], ["kefir-1", 250]] }
+    ] }
+  ] },
+  { "id": "surplus", "title": "Профицит", "baseKcal": 2600, "days": [
+    { "meals": [
+      { "name": "Завтрак", "items": [["oats", 80], ["milk-2", 300], ["egg", 110], ["banana", 120], ["peanut-butter", 20], ["honey", 15]] },
+      { "name": "Обед", "items": [["buckwheat", 90], ["chicken-thigh", 180], ["cabbage", 150], ["carrot", 50], ["oil-sunflower", 10], ["bread-rye", 70]] },
+      { "name": "Перекус", "items": [["tvorog-5", 200], ["yogurt-natural", 150], ["raisins", 20], ["walnuts", 20]] },
+      { "name": "Ужин", "items": [["pollock", 200], ["potato", 300], ["cucumber", 100], ["tomato", 100], ["smetana-15", 30], ["oil-olive", 7]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["egg", 165], ["cheese-hard", 40], ["bread-wholegrain", 70], ["tomato", 120], ["butter", 15], ["kefir-3", 300]] },
+      { "name": "Обед", "items": [["rice-white", 90], ["turkey-breast", 180], ["broccoli", 150], ["bell-pepper", 100], ["oil-olive", 10]] },
+      { "name": "Перекус", "items": [["yogurt-natural", 200], ["muesli", 50], ["banana", 120], ["almonds", 20]] },
+      { "name": "Ужин", "items": [["beef-lean", 180], ["barley-pearl", 70], ["beet", 150], ["herbs", 20], ["oil-sunflower", 7], ["tvorog-5", 100]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["millet", 70], ["milk-2", 300], ["pumpkin", 100], ["butter", 10], ["egg", 110], ["honey", 20], ["dried-apricots", 30]] },
+      { "name": "Обед", "items": [["pasta-durum", 100], ["ground-beef", 150], ["tomato-paste", 30], ["onion", 50], ["zucchini", 150], ["cheese-hard", 30]] },
+      { "name": "Перекус", "items": [["kefir-1", 300], ["crispbread-rye", 30], ["peanut-butter", 20], ["apple", 150]] },
+      { "name": "Ужин", "items": [["cod", 220], ["potato", 250], ["cauliflower", 150], ["oil-olive", 10], ["tvorog-0", 150]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["oats", 80], ["kefir-1", 300], ["whey-protein", 30], ["blueberry", 100], ["flax-seeds", 15], ["banana", 120]] },
+      { "name": "Обед", "items": [["barley-pearl", 70], ["beef-liver", 180], ["onion", 50], ["smetana-15", 30], ["cucumber", 100], ["tomato", 100], ["oil-sunflower", 10], ["bread-rye", 35]] },
+      { "name": "Перекус", "items": [["tvorog-5", 200], ["smetana-15", 30], ["jam", 20], ["pear", 160]] },
+      { "name": "Ужин", "items": [["potato", 300], ["herring-salted", 120], ["sauerkraut", 150], ["onion", 30], ["beet", 100], ["oil-sunflower", 12], ["bread-rye", 35]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["tvorog-9", 200], ["yogurt-natural", 150], ["muesli", 60], ["strawberry", 100], ["honey", 15], ["walnuts", 15]] },
+      { "name": "Обед", "items": [["bulgur", 90], ["pork-loin", 180], ["cabbage", 150], ["carrot", 50], ["oil-sunflower", 10], ["bread-wholegrain", 70]] },
+      { "name": "Перекус", "items": [["egg", 110], ["cucumber", 120], ["crispbread-rye", 30], ["kefir-3", 250]] },
+      { "name": "Ужин", "items": [["trout", 200], ["potato", 250], ["lettuce", 100], ["tomato", 100], ["oil-olive", 8], ["lemon", 20]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["buckwheat", 80], ["milk-2", 300], ["egg", 110], ["butter", 10], ["orange", 150], ["cheese-hard", 20]] },
+      { "name": "Обед", "items": [["rice-white", 90], ["chicken-drumstick", 200], ["onion", 50], ["mushrooms", 100], ["cucumber", 100], ["tomato", 100], ["oil-sunflower", 10]] },
+      { "name": "Перекус", "items": [["kefir-3", 300], ["banana", 120], ["peanuts", 30]] },
+      { "name": "Ужин", "items": [["turkey-thigh", 180], ["lentils", 60], ["bell-pepper", 100], ["zucchini", 150], ["oil-olive", 8], ["tvorog-5", 100]] }
+    ] },
+    { "meals": [
+      { "name": "Завтрак", "items": [["oats", 80], ["milk-1", 300], ["tvorog-5", 150], ["raspberry", 100], ["almonds", 20], ["honey", 15]] },
+      { "name": "Обед", "items": [["pasta-durum", 90], ["shrimp", 180], ["garlic", 5], ["oil-olive", 12], ["tomato", 150], ["lettuce", 50], ["cheese-hard", 30]] },
+      { "name": "Перекус", "items": [["egg", 110], ["bread-rye", 70], ["cheese-brynza", 30], ["cucumber", 100], ["apple", 150]] },
+      { "name": "Ужин", "items": [["beef-lean", 180], ["buckwheat", 70], ["beet", 150], ["sauerkraut", 100], ["oil-sunflower", 8], ["kefir-1", 300]] }
+    ] }
   ] }
 ]

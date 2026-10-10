@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react"
 import { Link, useParams } from "react-router"
 import { ArrowLeft, Dumbbell } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -7,7 +8,9 @@ import { EQUIPMENT_RU } from "@/content/labels"
 import { MUSCLE_RU } from "@/content/muscles"
 import { assetUrl } from "./ExerciseCard"
 import { useExercises } from "./useExercises"
-import { ExerciseFigure } from "./figure/ExerciseFigure"
+
+/** three.js lives in its own chunk: loaded only when an exercise page opens */
+const ExerciseFigure = lazy(() => import("./figure/ExerciseFigure").then((m) => ({ default: m.ExerciseFigure })))
 
 export default function ExercisePage() {
   const { slug = "" } = useParams()
@@ -49,7 +52,9 @@ export default function ExercisePage() {
           <TabsTrigger value="photo">Фото</TabsTrigger>
         </TabsList>
         <TabsContent value="3d">
-          <ExerciseFigure anim={exercise.anim} />
+          <Suspense fallback={<div className="aspect-[4/3] w-full animate-pulse rounded-xl bg-muted" />}>
+            <ExerciseFigure anim={exercise.anim} />
+          </Suspense>
         </TabsContent>
         <TabsContent value="photo">
           {exercise.images.length ? (

@@ -1,4 +1,5 @@
 import { ANKLE_CRITERIA } from "@/features/program/engine/restrictions"
+import type { Rows } from "@/lib/db"
 import type { AnkleTest, TestRow } from "@/lib/schema"
 
 export interface Criterion {
@@ -27,3 +28,10 @@ export function ankleStatus(ankle: Partial<AnkleTest> | undefined): { cleared: b
 }
 
 export const KIND_RU: Record<TestRow["kind"], string> = { baseline: "Базовый", checkpoint: "Чекпоинт" }
+
+const KIND_RANK: Record<TestRow["kind"], number> = { baseline: 0, checkpoint: 1 }
+
+/** newest test; a checkpoint outranks a baseline taken the same day */
+export function latestTest(rows: Rows): TestRow | undefined {
+  return Object.values(rows.tests).sort((a, b) => b.date.localeCompare(a.date) || KIND_RANK[b.kind] - KIND_RANK[a.kind])[0]
+}

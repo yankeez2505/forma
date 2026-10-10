@@ -57,6 +57,6 @@ export function checkpointRows(rows: Rows, results: TestRow["results"], userId: 
   const input: TestInput = { ...results, date: today }
   const history = historyFor(rows)
   const active = activeProgram(rows)
-  const program = active ? nextBlock(active, input, today, exercises, history) : buildProgram(newConfig(profileInput(profile), input, today, newId()), exercises, history)
+  const program = active ? nextBlock(active, profileInput(profile), input, today, exercises, history) : buildProgram(newConfig(profileInput(profile), input, today, newId()), exercises, history)
   return { test: { id: testId(userId, today, kind), date: today, kind, results }, program }
 }

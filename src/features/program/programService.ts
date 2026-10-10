@@ -3,7 +3,7 @@ import type { Rows, Upsertable } from "@/lib/db"
 import { newId } from "@/lib/id"
 import type { PlannedSession, Program, Workout, WorkoutSet } from "@/lib/schema"
 import { generateBlock } from "./engine/generateBlock"
-import type { SessionLog, SessionPlan, SetLog, TestInput } from "./engine/types"
+import type { ProfileInput, SessionLog, SessionPlan, SetLog, TestInput } from "./engine/types"
 import { isoDate, toPlannedRow, toSessionPlan, type StoredConfig } from "./model"
 
 export interface ProgramRows {
@@ -101,9 +101,9 @@ export function buildProgram(cfg: StoredConfig, exercises: Exercise[], history: 
   }
 }
 
-/** the same program row with the next block: config bumped, sessions regenerated from blockStart */
-export function nextBlock(program: Program, latestTest: TestInput, blockStart: string, exercises: Exercise[], history: SessionLog[]): ProgramRows {
+/** the same program row with the next block: current profile and test, block bumped, sessions regenerated from blockStart */
+export function nextBlock(program: Program, profile: ProfileInput, latestTest: TestInput, blockStart: string, exercises: Exercise[], history: SessionLog[]): ProgramRows {
   const prev = storedConfig(program)
-  const cfg: StoredConfig = { ...prev, latestTest, blockIndex: prev.blockIndex + 1, blockStart }
+  const cfg: StoredConfig = { ...prev, profile, latestTest, blockIndex: prev.blockIndex + 1, blockStart }
   return buildProgram(cfg, exercises, history, program.id)
 }

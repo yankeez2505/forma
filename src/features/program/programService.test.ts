@@ -41,7 +41,7 @@ it("historyFor returns finished workouts as session logs sorted by date", () => 
 
 it("nextBlock keeps the program id and start date, bumps the block and replaces the sessions", () => {
   const rows = programRows()
-  const next = nextBlock(rows.programs.p1, { ...ownerBaseline, date: "2026-11-09", ankle: clearedAnkle }, "2026-11-09", exercises, historyFor(rows))
+  const next = nextBlock(rows.programs.p1, ownerStored.profile, { ...ownerBaseline, date: "2026-11-09", ankle: clearedAnkle }, "2026-11-09", exercises, historyFor(rows))
   expect(next.program).toMatchObject({ id: "p1", start_date: "2026-10-10", active: true })
   expect(next.program.config as StoredConfig).toMatchObject({ blockIndex: 1, blockStart: "2026-11-09" })
   expect(next.sessions[0].date).toBe("2026-11-09")
@@ -51,4 +51,13 @@ it("nextBlock keeps the program id and start date, bumps the block and replaces 
   const current = plannedSessions(rows, "p1")
   expect(current).toHaveLength(12)
   expect(current.every((s) => s.date >= "2026-11-09")).toBe(true)
+})
+
+it("nextBlock rebuilds from the current profile, not the block-0 snapshot", () => {
+  const rows = programRows()
+  const profile = { ...ownerStored.profile, days_per_week: 4 as const }
+  const next = nextBlock(rows.programs.p1, profile, { ...ownerBaseline, date: "2026-11-09" }, "2026-11-09", exercises, historyFor(rows))
+  expect(next.program).toMatchObject({ id: "p1", template: "upperlower" })
+  expect((next.program.config as StoredConfig).profile).toEqual(profile)
+  expect(next.sessions).toHaveLength(16)
 })

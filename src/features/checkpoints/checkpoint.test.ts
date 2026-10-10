@@ -63,3 +63,13 @@ it("checkpointRows without an active program builds block 0 from the profile; wi
   expect(out.program.sessions.every((s) => (s.exercises as { block: string }[]).every((e) => e.block !== "finisher"))).toBe(true)
   expect(() => checkpointRows(emptyRows(), baseResults, "local", "2026-10-12", exercises)).toThrow("no profile")
 })
+
+it("checkpointRows builds the next block from the current profile", () => {
+  const rows = programRows()
+  rows.tests.t0 = testRow("t0", "2026-10-12", "baseline")
+  rows.profiles.local = { ...ownerProfileRow, days_per_week: 4 }
+  const out = checkpointRows(rows, { ...baseResults, ankle: clearedAnkle }, "local", "2026-11-09", exercises)
+  expect(out.program.program).toMatchObject({ id: "p1", template: "upperlower" })
+  expect((out.program.program.config as StoredConfig).profile.days_per_week).toBe(4)
+  expect(out.program.sessions).toHaveLength(16)
+})

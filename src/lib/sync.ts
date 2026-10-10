@@ -30,14 +30,22 @@ export async function pushPending(client: SupabaseClient, db: Db = useDb): Promi
     groups.set(table, g)
   }
   let n = 0
-  for (const [table, g] of groups) {
+  let failure: string | null = null
+  /** TABLES is topological: parents land before the rows that reference them */
+  for (const table of TABLES) {
+    const g = groups.get(table)
+    if (!g) continue
     const { error } = await client.from(table).upsert(g.rows, { onConflict: "id" })
-    if (error) continue
+    if (error) {
+      failure = error.message
+      continue
+    }
     /** a row edited while its upsert was in flight stays pending: the server got the old version */
     const now = db.getState().rows[table] as Record<string, Row>
     db.getState().markSynced(g.keys.filter((_, i) => now[g.ids[i]] === g.rows[i]))
     n += g.rows.length
   }
+  db.getState().setSyncError(failure)
   return n
 }
 

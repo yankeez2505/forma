@@ -90,3 +90,31 @@ describe("pushPending while rows change", () => {
     expect(useDb.getState().rows.tests.t1.results.pushups).toBe(7)
   })
 })
+
+describe("pushPending order and errors", () => {
+  const workout = { id: "w1", planned_session_id: null, started_at: "2026-10-10T18:00:00.000Z", finished_at: null, pre_soreness: null, pre_sleep: null, pre_energy: null, rpe: null, notes: null }
+  const set = { id: "s1", workout_id: "w1", exercise_id: "push-up", set_no: 1, reps: 10, duration_s: null, weight_kg: null, band_kg: null, rir: null }
+  it("pushes parents before children whatever the order rows were queued in", async () => {
+    useDb.getState().upsert("workout_sets", set)
+    useDb.getState().upsert("workouts", workout)
+    const done = new Set<string>()
+    const client = {
+      from: (table: string) => ({
+        upsert: async () => {
+          if (table === "workout_sets" && !done.has("workouts")) return { error: { message: "fk" } }
+          done.add(table)
+          return { error: null }
+        },
+      }),
+    } as never
+    expect(await pushPending(client)).toBe(2)
+    expect(useDb.getState().pending).toEqual([])
+  })
+  it("a failed table leaves its message in lastSyncError; the next clean pass clears it", async () => {
+    useDb.getState().upsert("tests", test("t1"))
+    await pushPending(makeFake({ fail: true }).client)
+    expect(useDb.getState().lastSyncError).toBe("x")
+    await pushPending(makeFake().client)
+    expect(useDb.getState().lastSyncError).toBeNull()
+  })
+})

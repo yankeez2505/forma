@@ -12,12 +12,15 @@ export interface DbState {
   pending: string[]
   /** "local" until signed in; adoptUser() swaps it into every row */
   userId: string
+  /** message of the last failed push, null after a clean pass; not persisted */
+  lastSyncError: string | null
   upsert<T extends TableName>(table: T, row: Upsertable<T>): Tables[T]
   remove(table: TableName, id: string): void
   markSynced(keys: string[]): void
   /** after a full pull from the server */
   replaceAll(rows: Rows, pending?: string[]): void
   adoptUser(userId: string): void
+  setSyncError(error: string | null): void
 }
 
 export const emptyRows = (): Rows => Object.fromEntries(TABLES.map((t) => [t, {}])) as Rows
@@ -39,6 +42,7 @@ export const useDb = create<DbState>()(
       rows: emptyRows(),
       pending: [],
       userId: "local",
+      lastSyncError: null,
       upsert(table, row) {
         const s = get()
         const incoming = row as unknown as Tables[typeof table]
@@ -75,6 +79,9 @@ export const useDb = create<DbState>()(
           }
         }
         set({ userId, rows, pending })
+      },
+      setSyncError(error) {
+        set({ lastSyncError: error })
       },
     }),
     {

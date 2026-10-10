@@ -102,3 +102,41 @@ it("bodyweight only: every day still has main work and vertical push falls back 
   const b = plain.find((s) => s.dayType === "B")!
   expect(b.exercises.filter((e) => e.block === "main" && pattern(e.slug) === "push_h").length).toBeGreaterThan(0)
 })
+
+it("progression grades against the dose that was actually planned: a set-trimmed exercise still advances", () => {
+  const a = block[0]
+  const target = a.exercises.filter((e) => e.block === "main" && e.reps).sort((x, y) => x.sets - y.sets)[0]
+  expect(target.sets).toBeLessThan(3)
+  const log = (date: string) => ({
+    date,
+    dayType: "A" as const,
+    planned: a.exercises,
+    sets: Array.from({ length: target.sets }, (_, i) => ({ slug: target.slug, setNo: i + 1, reps: target.reps![1] })),
+  })
+  const next = generateBlock(ownerConfig, exercises, [log("2026-10-12"), log("2026-10-19")], 0, "prog-1")
+  const after = next[0].exercises.find((e) => e.block === "main" && pattern(e.slug) === pattern(target.slug))!
+  expect(bySlug.get(after.slug)!.difficultyRank).toBeGreaterThan(bySlug.get(target.slug)!.difficultyRank)
+  expect(after.sets).toBe(target.sets)
+})
+
+it("hold progression accumulates: each pair of top rounds adds 5 s on top of the last planned hold", () => {
+  /** plank_s 40 ranks core at 4: the first seed whose A-day picks the plank over the superman */
+  const cfg = { ...ownerConfig, seed: ["owner-1", "owner-2", "owner-3", "owner-4", "owner-5", "owner-6"].find((seed) => generateBlock({ ...ownerConfig, seed }, exercises, [], 0, "p")[0].exercises.some((e) => e.block === "main" && e.durationS))! }
+  const day = generateBlock(cfg, exercises, [], 0, "prog-1")[0]
+  const hold = day.exercises.find((e) => e.block === "main" && e.durationS)!
+  expect(hold.slug).toBe("plank")
+  const log = (date: string, planned: PlannedExercise[], ex: PlannedExercise) => ({
+    date,
+    dayType: day.dayType,
+    planned,
+    sets: Array.from({ length: ex.sets }, (_, i) => ({ slug: ex.slug, setNo: i + 1, durationS: ex.durationS })),
+  })
+  const find = (b: SessionPlan[]) => b.find((s) => s.dayType === day.dayType)!
+  const round1 = [log("2026-10-12", day.exercises, hold), log("2026-10-19", day.exercises, hold)]
+  const next1 = find(generateBlock(cfg, exercises, round1, 0, "prog-1"))
+  const hold1 = next1.exercises.find((e) => e.block === "main" && e.slug === hold.slug)!
+  expect(hold1.durationS).toBe(hold.durationS! + 5)
+  const round2 = [...round1, log("2026-10-26", next1.exercises, hold1), log("2026-11-02", next1.exercises, hold1)]
+  const hold2 = find(generateBlock(cfg, exercises, round2, 0, "prog-1")).exercises.find((e) => e.block === "main" && e.slug === hold.slug)!
+  expect(hold2.durationS).toBe(hold.durationS! + 10)
+})

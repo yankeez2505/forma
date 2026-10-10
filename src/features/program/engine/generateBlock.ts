@@ -59,6 +59,15 @@ function lastTwo(recent: SessionLog[], slug: string): SetLog[][] {
     .slice(0, 2)
 }
 
+/** the dose this slug was last planned with (history is newest first) */
+function lastPlanned(recent: SessionLog[], slug: string): PlannedExercise | undefined {
+  for (const s of recent) {
+    const hit = s.planned?.find((e) => e.block === "main" && e.slug === slug)
+    if (hit) return hit
+  }
+  return undefined
+}
+
 /** main work for one day type: one exercise per slot, continued and progressed from history when logged */
 function planDay(day: DayTemplate, pool: Pool, cfg: ProgramConfig, recent: SessionLog[], rng: () => number): PlannedExercise[] {
   const out: PlannedExercise[] = []
@@ -81,7 +90,13 @@ function planDay(day: DayTemplate, pool: Pool, cfg: ProgramConfig, recent: Sessi
     const ex = anchor(recent, candidates) ?? pickExercise(candidates, rank, rng, variety)
     if (!ex) continue
     used.add(ex.slug)
-    out.push(progressExercise(buildPlanned(ex, slot.sets, cfg.latestTest, note), lastTwo(recent, ex.slug), list, ex))
+    const prev = lastPlanned(recent, ex.slug) ?? buildPlanned(ex, slot.sets, cfg.latestTest, note)
+    const next = progressExercise(prev, lastTwo(recent, ex.slug), list, ex)
+    /** sets restart from the template: a deload or a time trim in the last plan must not become the new base */
+    const planned: PlannedExercise = { ...next, sets: Math.max(next.sets, slot.sets) }
+    if (note) planned.note = note
+    else delete planned.note
+    out.push(planned)
   }
   return out
 }

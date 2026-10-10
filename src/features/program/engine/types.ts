@@ -83,6 +83,8 @@ export interface SessionLog {
   preEnergy?: number
   rpe?: number
   sets: SetLog[]
+  /** what the session asked for (planned_sessions.exercises); progression grades the sets against this dose */
+  planned?: PlannedExercise[]
 }
 export interface CheckIn {
   soreness: number

@@ -33,3 +33,6 @@ export function ageText(n: number): string {
   if (d >= 2 && d <= 4 && (h < 12 || h > 14)) return `${n} года`
   return `${n} лет`
 }
+
+/** header dot: unsent rows or a sync error matter only when a Supabase client exists */
+export const syncAlert = (enabled: boolean, pending: number, error: string | null): boolean => enabled && (pending > 0 || error !== null)

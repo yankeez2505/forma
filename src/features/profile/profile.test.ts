@@ -5,7 +5,7 @@ import type { StoredConfig } from "@/features/program/model"
 import { historyFor } from "@/features/program/programService"
 import { emptyRows } from "@/lib/db"
 import { TABLES, type TestRow } from "@/lib/schema"
-import { ageText, exportJson, programAffected, restartProgram } from "./profile"
+import { ageText, exportJson, programAffected, restartProgram, syncAlert } from "./profile"
 
 const test: TestRow = { id: "t", ...META, date: "2026-10-12", kind: "baseline", results: { pushups: 12, squats: 25, plank_s: 40, ankle: { knee_to_wall_diff_cm: 2.5, single_leg_calf_raises: 12, balance_eyes_closed_s: 15 } } }
 
@@ -44,4 +44,11 @@ it("exportJson round-trips every table", () => {
 })
 it("ageText declines «год» by Russian rules", () => {
   expect([1, 2, 5, 11, 12, 21, 22, 25, 101, 111].map(ageText)).toEqual(["1 год", "2 года", "5 лет", "11 лет", "12 лет", "21 год", "22 года", "25 лет", "101 год", "111 лет"])
+})
+it("syncAlert lights only when sync is configured and something is unsent or failed", () => {
+  expect(syncAlert(false, 16, null)).toBe(false)
+  expect(syncAlert(false, 0, "boom")).toBe(false)
+  expect(syncAlert(true, 0, null)).toBe(false)
+  expect(syncAlert(true, 1, null)).toBe(true)
+  expect(syncAlert(true, 0, "boom")).toBe(true)
 })

@@ -1,13 +1,15 @@
 import { Link, Outlet, useLocation } from "react-router"
 import { Toaster } from "@/components/ui/sonner"
+import { syncAlert } from "@/features/profile/profile"
 import { useDb } from "@/lib/db"
+import { syncEnabled } from "@/lib/supabase"
 import { cn } from "@/lib/utils"
 import { UserRound } from "lucide-react"
 import { BottomNav } from "./BottomNav"
 
 export default function AppLayout() {
   const { pathname } = useLocation()
-  const dot = useDb((s) => s.pending.length > 0 || s.lastSyncError !== null)
+  const dot = useDb((s) => syncAlert(syncEnabled, s.pending.length, s.lastSyncError))
   const bare = pathname.startsWith("/onboarding") || pathname.startsWith("/workout")
   return (
     <div className={cn("mx-auto min-h-svh max-w-md md:max-w-3xl", bare ? "pb-6" : "pb-20")}>

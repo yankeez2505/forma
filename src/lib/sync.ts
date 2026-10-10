@@ -4,6 +4,8 @@ import { TABLES, type TableName } from "./schema"
 
 type Db = typeof useDb
 type Row = { id: string; updated_at: string }
+/** PostgREST caps a select at 1000 rows; pull in pages until a short one */
+const PAGE = 1000
 
 const split = (key: string): [TableName, string] => {
   const i = key.indexOf(":")
@@ -36,12 +38,22 @@ export async function pushPending(client: SupabaseClient, db: Db = useDb): Promi
   return n
 }
 
+async function pullTable(client: SupabaseClient, table: TableName): Promise<Row[] | undefined> {
+  const out: Row[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await client.from(table).select("*").order("id").range(from, from + PAGE - 1)
+    if (error || !data) return undefined
+    out.push(...(data as Row[]))
+    if (data.length < PAGE) return out
+  }
+}
+
 /** Pulls every table. A server row replaces the local one only when its updated_at is newer; local winners stay pending. */
 export async function pullAll(client: SupabaseClient, db: Db = useDb): Promise<void> {
   const server = new Map<TableName, Row[]>()
   for (const table of TABLES) {
-    const { data, error } = await client.from(table).select("*")
-    if (!error && data) server.set(table, data as Row[])
+    const rows = await pullTable(client, table)
+    if (rows) server.set(table, rows)
   }
   const s = db.getState()
   const merged = emptyRows()

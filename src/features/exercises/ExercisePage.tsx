@@ -7,6 +7,7 @@ import { EQUIPMENT_RU } from "@/content/labels"
 import { MUSCLE_RU } from "@/content/muscles"
 import { assetUrl } from "./ExerciseCard"
 import { useExercises } from "./useExercises"
+import { ExerciseFigure } from "./figure/ExerciseFigure"
 
 export default function ExercisePage() {
   const { slug = "" } = useParams()
@@ -42,15 +43,13 @@ export default function ExercisePage() {
         ))}
         {exercise.impact && <Badge variant="destructive">Ударная нагрузка</Badge>}
       </div>
-      <Tabs defaultValue={exercise.images.length ? "photo" : "3d"}>
+      <Tabs defaultValue={exercise.anim || !exercise.images.length ? "3d" : "photo"}>
         <TabsList className="w-full">
           <TabsTrigger value="3d">3D</TabsTrigger>
           <TabsTrigger value="photo">Фото</TabsTrigger>
         </TabsList>
         <TabsContent value="3d">
-          <div className="flex aspect-[4/3] items-center justify-center rounded-xl border border-dashed text-muted-foreground">
-            3D-модель появится в следующем шаге
-          </div>
+          <ExerciseFigure anim={exercise.anim} />
         </TabsContent>
         <TabsContent value="photo">
           {exercise.images.length ? (

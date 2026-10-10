@@ -1,0 +1,10 @@
+{
+  "slug": "bodyweight-squat",
+  "duration": 2.6,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [-15, 0, 0], "rShoulder": [-15, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.35 }, "spine": [20, 0, 0], "lHip": [-75, 0, 8], "rHip": [-75, 0, -8], "lKnee": [90, 0, 0], "rKnee": [90, 0, 0], "lAnkle": [-15, 0, 0], "rAnkle": [-15, 0, 0], "lShoulder": [-80, 0, 0], "rShoulder": [-80, 0, 0] } },
+    { "t": 1, "pose": { "lShoulder": [-15, 0, 0], "rShoulder": [-15, 0, 0] } }
+  ]
+}

@@ -4,9 +4,17 @@ export type Joint =
   | "lHip" | "rHip" | "lKnee" | "rKnee" | "lAnkle" | "rAnkle"
 /** degrees, applied in XYZ order */
 export type Euler3 = [number, number, number]
+/** root.rot is [pitch, yaw, roll] in degrees, applied YXZ: pitch +90 = prone, -90 = supine */
 export type Pose = Partial<Record<Joint, Euler3>> & { root?: { y?: number; rot?: Euler3 } }
 export interface AnimKey { t: number; pose: Pose }
-export interface Anim { slug: string; duration: number; loop: boolean; keys: AnimKey[] }
+export interface Anim {
+  slug: string
+  duration: number
+  loop: boolean
+  keys: AnimKey[]
+  /** optional camera aim for lying exercises */
+  view?: { target: [number, number, number] }
+}
 
 export const JOINTS: Joint[] = [
   "hips", "spine", "chest", "neck", "head",

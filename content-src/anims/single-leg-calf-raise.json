@@ -1,0 +1,10 @@
+{
+  "slug": "single-leg-calf-raise",
+  "duration": 2.2,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "rKnee": [60, 0, 0], "rAnkle": [20, 0, 0], "lShoulder": [0, 0, 8], "rShoulder": [0, 0, -8] } },
+    { "t": 0.5, "pose": { "root": { "y": 0.08, "rot": [0, 0, 0] }, "lAnkle": [30, 0, 0], "rKnee": [60, 0, 0], "rAnkle": [20, 0, 0], "lShoulder": [0, 0, 8], "rShoulder": [0, 0, -8] } },
+    { "t": 1, "pose": { "rKnee": [60, 0, 0], "rAnkle": [20, 0, 0], "lShoulder": [0, 0, 8], "rShoulder": [0, 0, -8] } }
+  ]
+}

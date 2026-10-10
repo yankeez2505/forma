@@ -1,0 +1,11 @@
+{
+  "slug": "plank",
+  "duration": 3,
+  "loop": true,
+  "view": { "target": [0, 0.3, 0] },
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.7, "rot": [81, 90, 0] }, "lShoulder": [-81, 0, 8], "rShoulder": [-81, 0, -8], "lElbow": [-90, 0, 0], "rElbow": [-90, 0, 0], "lAnkle": [-21, 0, 0], "rAnkle": [-21, 0, 0], "neck": [-20, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.69, "rot": [81, 90, 0] }, "lShoulder": [-81, 0, 8], "rShoulder": [-81, 0, -8], "lElbow": [-90, 0, 0], "rElbow": [-90, 0, 0], "lAnkle": [-21, 0, 0], "rAnkle": [-21, 0, 0], "neck": [-20, 0, 0] } },
+    { "t": 1, "pose": { "root": { "y": -0.7, "rot": [81, 90, 0] }, "lShoulder": [-81, 0, 8], "rShoulder": [-81, 0, -8], "lElbow": [-90, 0, 0], "rElbow": [-90, 0, 0], "lAnkle": [-21, 0, 0], "rAnkle": [-21, 0, 0], "neck": [-20, 0, 0] } }
+  ]
+}

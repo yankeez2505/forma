@@ -1,0 +1,10 @@
+{
+  "slug": "standing-calf-raise",
+  "duration": 2,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "lShoulder": [0, 0, 8], "rShoulder": [0, 0, -8] } },
+    { "t": 0.5, "pose": { "root": { "y": 0.08, "rot": [0, 0, 0] }, "lAnkle": [30, 0, 0], "rAnkle": [30, 0, 0], "lShoulder": [0, 0, 8], "rShoulder": [0, 0, -8] } },
+    { "t": 1, "pose": { "lShoulder": [0, 0, 8], "rShoulder": [0, 0, -8] } }
+  ]
+}

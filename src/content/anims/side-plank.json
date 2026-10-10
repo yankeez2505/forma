@@ -1,0 +1,11 @@
+{
+  "slug": "side-plank",
+  "duration": 3,
+  "loop": true,
+  "view": { "target": [0, 0.4, 0] },
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.535, "rot": [0, 0, -76] }, "lShoulder": [0, 0, 76], "lElbow": [-90, 0, 0], "rShoulder": [0, 0, -100] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.525, "rot": [0, 0, -76] }, "lShoulder": [0, 0, 76], "lElbow": [-90, 0, 0], "rShoulder": [0, 0, -100] } },
+    { "t": 1, "pose": { "root": { "y": -0.535, "rot": [0, 0, -76] }, "lShoulder": [0, 0, 76], "lElbow": [-90, 0, 0], "rShoulder": [0, 0, -100] } }
+  ]
+}

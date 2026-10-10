@@ -1,0 +1,10 @@
+{
+  "slug": "jump-rope",
+  "duration": 0.5,
+  "loop": true,
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.01, "rot": [0, 0, 0] }, "lHip": [-10, 0, 0], "rHip": [-10, 0, 0], "lKnee": [15, 0, 0], "rKnee": [15, 0, 0], "lAnkle": [-5, 0, 0], "rAnkle": [-5, 0, 0], "lShoulder": [0, 0, 20], "rShoulder": [0, 0, -20], "lElbow": [-90, 0, 0], "rElbow": [-90, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": 0.1, "rot": [0, 0, 0] }, "lAnkle": [35, 0, 0], "rAnkle": [35, 0, 0], "lShoulder": [0, 0, 22], "rShoulder": [0, 0, -22], "lElbow": [-85, 15, 0], "rElbow": [-85, -15, 0] } },
+    { "t": 1, "pose": { "root": { "y": -0.01, "rot": [0, 0, 0] }, "lHip": [-10, 0, 0], "rHip": [-10, 0, 0], "lKnee": [15, 0, 0], "rKnee": [15, 0, 0], "lAnkle": [-5, 0, 0], "rAnkle": [-5, 0, 0], "lShoulder": [0, 0, 20], "rShoulder": [0, 0, -20], "lElbow": [-90, 0, 0], "rElbow": [-90, 0, 0] } }
+  ]
+}

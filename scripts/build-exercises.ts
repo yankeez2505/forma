@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, writeFile } from "node:fs/promises"
+import { access, copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 import sharp from "sharp"
 import { z } from "zod"
@@ -13,6 +13,8 @@ const CURATED = path.join(ROOT, "content-src", "exercises.curated.json")
 const RU = path.join(ROOT, "content-src", "exercises.ru.json")
 const OUT_JSON = path.join(ROOT, "src", "content", "exercises.json")
 const OUT_IMG = path.join(ROOT, "public", "ex")
+const ANIMS_SRC = path.join(ROOT, "content-src", "anims")
+const ANIMS_OUT = path.join(ROOT, "src", "content", "anims")
 /** equipment every home has: an exercise using only these counts as bodyweight */
 const HOME_FREE = new Set<EquipmentTag>(["mat", "wall", "chair"])
 
@@ -59,7 +61,7 @@ async function fetchCached(url: string, file: string): Promise<Buffer> {
   return buf
 }
 
-function validate(curated: Curated[], ru: z.infer<typeof RuSchema>, db: Map<string, DbEntry>): string[] {
+function validate(curated: Curated[], ru: z.infer<typeof RuSchema>, db: Map<string, DbEntry>, anims: Set<string>): string[] {
   const errors: string[] = []
   const slugs = new Set<string>()
   const ranks = new Set<string>()
@@ -72,8 +74,27 @@ function validate(curated: Curated[], ru: z.infer<typeof RuSchema>, db: Map<stri
     if (!ru[e.slug]) errors.push(`missing translation ${e.slug}`)
     if (e.sourceId !== null && !db.has(e.sourceId)) errors.push(`unknown sourceId ${e.sourceId} (${e.slug})`)
     if (e.sourceId === null && !e.primaryMuscles) errors.push(`${e.slug} has no source and no primaryMuscles`)
+    if (e.anim !== null && !anims.has(e.anim)) errors.push(`missing anim ${e.anim} (${e.slug})`)
   }
   return errors
+}
+
+/** anim ids with a clip in content-src/anims; a clip's slug must equal its file name (index.ts keys by slug) */
+async function readAnims(): Promise<{ ids: Set<string>; errors: string[] }> {
+  const ids = new Set<string>()
+  const errors: string[] = []
+  for (const file of (await readdir(ANIMS_SRC)).filter((f) => f.endsWith(".json"))) {
+    const id = file.slice(0, -5)
+    const clip = JSON.parse(await readFile(path.join(ANIMS_SRC, file), "utf8")) as { slug?: unknown }
+    if (clip.slug !== id) errors.push(`anim ${file} has slug ${String(clip.slug)}`)
+    ids.add(id)
+  }
+  return { ids, errors }
+}
+
+async function copyAnims(ids: Set<string>) {
+  await mkdir(ANIMS_OUT, { recursive: true })
+  for (const id of ids) await copyFile(path.join(ANIMS_SRC, `${id}.json`), path.join(ANIMS_OUT, `${id}.json`))
 }
 
 async function buildImages(slug: string, src: DbEntry | undefined): Promise<string[]> {
@@ -94,7 +115,7 @@ async function buildImages(slug: string, src: DbEntry | undefined): Promise<stri
 function report(all: Exercise[]) {
   const bodyweight = (e: Exercise) => e.equipment.every((t) => HOME_FREE.has(t))
   const thin = PATTERNS.filter((p) => all.filter((e) => e.pattern === p && bodyweight(e)).length < 2)
-  console.log(`exercises: ${all.length}, images: ${all.reduce((n, e) => n + e.images.length, 0)}`)
+  console.log(`exercises: ${all.length}, images: ${all.reduce((n, e) => n + e.images.length, 0)}, anims: ${all.filter((e) => e.anim !== null).length}`)
   console.log(`unreviewed translations: ${all.filter((e) => !e.reviewed).length}`)
   console.log(`patterns with <2 bodyweight candidates: ${thin.join(", ") || "none"}`)
 }
@@ -104,11 +125,13 @@ async function main() {
   const db = new Map(DbSchema.parse(JSON.parse(dbRaw.toString("utf8"))).map((e) => [e.id, e]))
   const curated = z.array(CuratedSchema).parse(JSON.parse(await readFile(CURATED, "utf8")))
   const ru = RuSchema.parse(JSON.parse(await readFile(RU, "utf8")))
-  const errors = validate(curated, ru, db)
+  const anims = await readAnims()
+  const errors = [...anims.errors, ...validate(curated, ru, db, anims.ids)]
   if (errors.length) {
     console.error(errors.join("\n"))
     process.exit(1)
   }
+  await copyAnims(anims.ids)
   const all: Exercise[] = []
   for (const { primaryMuscles, secondaryMuscles, ...e } of curated) {
     const src = e.sourceId ? db.get(e.sourceId) : undefined

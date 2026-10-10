@@ -40,10 +40,6 @@ export function setRow(workoutId: string, s: SetLog): Upsertable<"workout_sets">
   }
 }
 
-const todo = (...used: unknown[]): never => {
-  void used
-  throw new Error("not implemented")
-}
 export function planForStart(rows: Rows, plannedId: string, checkIn: CheckIn | null, exercises: Exercise[]): { prepared: SessionPlan; plan: SessionPlan } | undefined {
   const row = rows.planned_sessions[plannedId]
   const program = activeProgram(rows)
@@ -104,7 +100,9 @@ export function abortWorkout(w: Workout, loggedSets: number, now: Date): Upserta
   return loggedSets > 0 ? { ...w, finished_at: now.toISOString(), notes: ABORT_NOTE } : null
 }
 export function resumeDecision(draft: ActiveWorkout | null, req: { workoutId: string } | { plannedId: string }): "continue" | "ask" | "none" {
-  return todo(draft, req)
+  if (!draft) return "none"
+  const same = "workoutId" in req ? draft.workoutId === req.workoutId : draft.plannedSessionId === req.plannedId
+  return same ? "continue" : "ask"
 }
 interface ActiveWorkoutStore {
   draft: ActiveWorkout | null

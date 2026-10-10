@@ -24,3 +24,12 @@ export function restartProgram(old: Program | undefined, profile: Profile, lates
 
 /** everything on this device as one JSON document */
 export const exportJson = (rows: Rows, userId: string, exportedAt: string): string => JSON.stringify({ app: "forma", version: 1, exportedAt, userId, tables: rows }, null, 2)
+
+/** «31 год», «32 года», «35 лет» */
+export function ageText(n: number): string {
+  const d = n % 10
+  const h = n % 100
+  if (d === 1 && h !== 11) return `${n} год`
+  if (d >= 2 && d <= 4 && (h < 12 || h > 14)) return `${n} года`
+  return `${n} лет`
+}

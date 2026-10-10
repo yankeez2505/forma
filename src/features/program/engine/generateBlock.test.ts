@@ -2,7 +2,7 @@ import { expect, it } from "vitest"
 import { all as exercises, bySlug } from "@/features/exercises/useExercises"
 import { autoregulate } from "./autoregulate"
 import { ownerBaseline, ownerConfig, ownerProfile } from "./fixtures/owner"
-import { generateBlock } from "./generateBlock"
+import { DAYS_PER_BLOCK, generateBlock, lastPlanned, lastTwo } from "./generateBlock"
 import { buildPool } from "./pool"
 import { progressExercise } from "./progression"
 import { deriveRestrictions } from "./restrictions"
@@ -139,4 +139,21 @@ it("hold progression accumulates: each pair of top rounds adds 5 s on top of the
   const round2 = [...round1, log("2026-10-26", next1.exercises, hold1), log("2026-11-02", next1.exercises, hold1)]
   const hold2 = find(generateBlock(cfg, exercises, round2, 0, "prog-1")).exercises.find((e) => e.block === "main" && e.slug === hold.slug)!
   expect(hold2.durationS).toBe(hold.durationS! + 10)
+})
+
+it("blockStart moves the dates, not the picks; DAYS_PER_BLOCK is 28", () => {
+  const late = generateBlock({ ...ownerConfig, blockStart: "2026-11-30" }, exercises, [], 1, "prog-1")
+  expect(late[0].date).toBe("2026-11-30")
+  expect(late).toHaveLength(12)
+  expect(late.map((s) => s.exercises.map((e) => e.slug))).toEqual(generateBlock(ownerConfig, exercises, [], 1, "prog-1").map((s) => s.exercises.map((e) => e.slug)))
+  expect(DAYS_PER_BLOCK).toBe(28)
+})
+it("lastTwo returns the two most recent logged set-lists of a slug", () => {
+  const log = (date: string, reps: number) => ({ date, sets: [{ slug: "push-up", setNo: 1, reps }] })
+  expect(lastTwo([log("2026-11-05", 12), log("2026-11-03", 10), log("2026-11-01", 8)], "push-up").map((s) => s[0].reps)).toEqual([12, 10])
+})
+it("lastPlanned returns the dose a slug was last planned with", () => {
+  const planned = (date: string, sets: number) => ({ date, sets: [], planned: [{ slug: "push-up", block: "main" as const, sets, reps: [8, 12] as [number, number], targetRir: 4, restS: 60 }] })
+  expect(lastPlanned([planned("2026-11-05", 3), planned("2026-11-03", 2)], "push-up")?.sets).toBe(3)
+  expect(lastPlanned([planned("2026-11-05", 3)], "squat")).toBeUndefined()
 })

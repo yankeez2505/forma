@@ -31,7 +31,7 @@ const FALLBACK_NOTE = "Замена: нет инвентаря"
 const SUBSTITUTE: Partial<Record<Pattern, { needs: EquipmentTag; note: string }>> = {
   pull_v: { needs: "bar", note: "Замена: нет турника" },
 }
-const DAYS_PER_BLOCK = 28
+export const DAYS_PER_BLOCK = 28
 
 function buildPlanned(ex: Exercise, sets: number, test: TestInput, note?: string): PlannedExercise {
   const p: PlannedExercise = { slug: ex.slug, block: "main", sets, targetRir: 4, restS: ex.timed ? 30 : 60 }
@@ -52,7 +52,7 @@ function anchor(recent: SessionLog[], list: Exercise[]): Exercise | undefined {
 }
 
 /** logged sets of a slug from its two most recent sessions, newest first */
-function lastTwo(recent: SessionLog[], slug: string): SetLog[][] {
+export function lastTwo(recent: SessionLog[], slug: string): SetLog[][] {
   return recent
     .map((s) => s.sets.filter((x) => x.slug === slug))
     .filter((sets) => sets.length > 0)
@@ -60,7 +60,7 @@ function lastTwo(recent: SessionLog[], slug: string): SetLog[][] {
 }
 
 /** the dose this slug was last planned with (history is newest first) */
-function lastPlanned(recent: SessionLog[], slug: string): PlannedExercise | undefined {
+export function lastPlanned(recent: SessionLog[], slug: string): PlannedExercise | undefined {
   for (const s of recent) {
     const hit = s.planned?.find((e) => e.block === "main" && e.slug === slug)
     if (hit) return hit
@@ -129,7 +129,7 @@ export function generateBlock(
   const recent = [...history].sort((a, b) => b.date.localeCompare(a.date))
   const days = new Map(tpl.days.map((d) => [d.dayType, planDay(d, pool, cfg, recent, rng)] as const))
   const cap = setCap(blockIndex, profile.goal)
-  const dates = sessionDates(addDays(cfg.startDate, DAYS_PER_BLOCK * blockIndex), profile.days_per_week)
+  const dates = sessionDates(cfg.blockStart ?? addDays(cfg.startDate, DAYS_PER_BLOCK * blockIndex), profile.days_per_week)
   return dates.map(({ date, week }, i) => {
     const dayType = dayTypeFor(tpl, i)
     const { rir, setScale } = weekParams(week, blockIndex)

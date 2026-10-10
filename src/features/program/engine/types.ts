@@ -65,6 +65,8 @@ export interface ProgramConfig {
   startDate: string
   seed: string
   generatorVersion: 1
+  /** first day of the current block; defaults to startDate + 28 × blockIndex */
+  blockStart?: string
 }
 
 export interface SetLog {

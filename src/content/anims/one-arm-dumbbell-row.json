@@ -1,0 +1,11 @@
+{
+  "slug": "one-arm-dumbbell-row",
+  "duration": 2.4,
+  "loop": true,
+  "prop": { "size": [0.4, 0.58, 0.4], "position": [0.45, 0.29, -0.3] },
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.02, "rot": [45, 90, 0] }, "lHip": [-45, 0, 0], "rHip": [-45, 0, 0], "lKnee": [15, 0, 0], "rKnee": [15, 0, 0], "lAnkle": [-15, 0, 0], "rAnkle": [-15, 0, 0], "lShoulder": [-45, 0, 5], "rShoulder": [-45, 0, -5], "neck": [-20, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.02, "rot": [45, 90, 0] }, "lHip": [-45, 0, 0], "rHip": [-45, 0, 0], "lKnee": [15, 0, 0], "rKnee": [15, 0, 0], "lAnkle": [-15, 0, 0], "rAnkle": [-15, 0, 0], "lShoulder": [-45, 0, 5], "rShoulder": [25, 0, -10], "rElbow": [-100, 0, 0], "neck": [-20, 0, 0] } },
+    { "t": 1, "pose": { "root": { "y": -0.02, "rot": [45, 90, 0] }, "lHip": [-45, 0, 0], "rHip": [-45, 0, 0], "lKnee": [15, 0, 0], "rKnee": [15, 0, 0], "lAnkle": [-15, 0, 0], "rAnkle": [-15, 0, 0], "lShoulder": [-45, 0, 5], "rShoulder": [-45, 0, -5], "neck": [-20, 0, 0] } }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "slug": "prone-y-raise",
+  "duration": 2.4,
+  "loop": true,
+  "view": { "target": [0, 0.2, 0] },
+  "keys": [
+    { "t": 0, "pose": { "root": { "y": -0.86, "rot": [90, 90, 0] }, "lAnkle": [70, 0, 0], "rAnkle": [70, 0, 0], "lShoulder": [0, 0, 150], "rShoulder": [0, 0, -150], "neck": [-10, 0, 0] } },
+    { "t": 0.5, "pose": { "root": { "y": -0.86, "rot": [90, 90, 0] }, "lAnkle": [70, 0, 0], "rAnkle": [70, 0, 0], "lShoulder": [-25, 0, 150], "rShoulder": [-25, 0, -150], "chest": [-10, 0, 0], "neck": [-20, 0, 0] } },
+    { "t": 1, "pose": { "root": { "y": -0.86, "rot": [90, 90, 0] }, "lAnkle": [70, 0, 0], "rAnkle": [70, 0, 0], "lShoulder": [0, 0, 150], "rShoulder": [0, 0, -150], "neck": [-10, 0, 0] } }
+  ]
+}

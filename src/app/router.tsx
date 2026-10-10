@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router"
+import { AuthPage } from "@/features/auth/AuthPage"
 import AppLayout from "./AppLayout"
 import CalendarPage from "./pages/CalendarPage"
 import ExercisesPage from "./pages/ExercisesPage"
@@ -21,6 +22,7 @@ export const router = createBrowserRouter(
         { path: "progress", element: <ProgressPage /> },
         { path: "nutrition", element: <NutritionPage /> },
         { path: "profile", element: <ProfilePage /> },
+        { path: "auth", element: <AuthPage /> },
         { path: "*", element: <NotFoundPage /> },
       ],
     },

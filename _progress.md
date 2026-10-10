@@ -26,7 +26,7 @@
 
 ## Часть 2
 - [x] План `docs/superpowers/plans/2026-10-10-forma-screens.md` — 10 задач, самопроверка пройдена
-- [ ] Выполнение (задачи 1–8 готовы, 9–10 впереди): executing-plans inline + TDD; леджер `.superpowers/sdd/2026-10-10-forma-screens/progress.md`; задачи 1→10, коммит+пуш после каждой
+- [ ] Выполнение (задачи 1–9 готовы, 10 впереди): executing-plans inline + TDD; леджер `.superpowers/sdd/2026-10-10-forma-screens/progress.md`; задачи 1→10, коммит+пуш после каждой
 - [ ] Финальное ревью ветки свежим агентом → фикс-пасс → отчёт Артёму
 
 ## Заметки

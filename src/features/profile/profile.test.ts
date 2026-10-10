@@ -3,8 +3,9 @@ import { all as exercises } from "@/features/exercises/useExercises"
 import { META, ownerProfileRow, programRows } from "@/features/program/engine/fixtures/rows"
 import type { StoredConfig } from "@/features/program/model"
 import { historyFor } from "@/features/program/programService"
-import { type TestRow } from "@/lib/schema"
-import { programAffected, restartProgram } from "./profile"
+import { emptyRows } from "@/lib/db"
+import { TABLES, type TestRow } from "@/lib/schema"
+import { exportJson, programAffected, restartProgram } from "./profile"
 
 const test: TestRow = { id: "t", ...META, date: "2026-10-12", kind: "baseline", results: { pushups: 12, squats: 25, plank_s: 40, ankle: { knee_to_wall_diff_cm: 2.5, single_leg_calf_raises: 12, balance_eyes_closed_s: 15 } } }
 
@@ -32,4 +33,12 @@ it("restartProgram without an old program starts block 0 and deactivates nothing
   expect(out.deactivate).toBeUndefined()
   expect(out.program.program.config as StoredConfig).toMatchObject({ blockIndex: 0, blockStart: "2026-10-12" })
   expect(out.program.sessions).toHaveLength(12)
+})
+it("exportJson round-trips every table", () => {
+  const rows = programRows()
+  const parsed = JSON.parse(exportJson(rows, "local", "2026-10-12T10:00:00.000Z")) as { app: string; version: number; exportedAt: string; userId: string; tables: Record<string, unknown> }
+  expect(parsed).toMatchObject({ app: "forma", version: 1, exportedAt: "2026-10-12T10:00:00.000Z", userId: "local" })
+  expect(Object.keys(parsed.tables)).toEqual([...TABLES])
+  expect(parsed.tables).toEqual(JSON.parse(JSON.stringify(rows)))
+  expect(JSON.parse(exportJson(emptyRows(), "local", "x")).tables.workouts).toEqual({})
 })

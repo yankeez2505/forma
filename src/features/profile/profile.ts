@@ -2,7 +2,7 @@ import type { Exercise } from "@/content/types"
 import type { SessionLog } from "@/features/program/engine/types"
 import { newConfig, profileInput, type StoredConfig } from "@/features/program/model"
 import { buildProgram, storedConfig, type ProgramRows } from "@/features/program/programService"
-import type { Upsertable } from "@/lib/db"
+import type { Rows, Upsertable } from "@/lib/db"
 import { newId } from "@/lib/id"
 import type { Profile, Program, TestRow } from "@/lib/schema"
 
@@ -21,3 +21,6 @@ export function restartProgram(old: Program | undefined, profile: Profile, lates
   if (!old) return { program }
   return { deactivate: { id: old.id, start_date: old.start_date, goal: old.goal, template: old.template, config: old.config, active: false }, program }
 }
+
+/** everything on this device as one JSON document */
+export const exportJson = (rows: Rows, userId: string, exportedAt: string): string => JSON.stringify({ app: "forma", version: 1, exportedAt, userId, tables: rows }, null, 2)

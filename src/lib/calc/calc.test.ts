@@ -1,5 +1,5 @@
 import { expect, it } from "vitest"
-import { bmr, navyBodyFat, targets, tdee } from "."
+import { bmi, bmr, navyBodyFat, targets, tdee } from "."
 
 it("bmr (Mifflin-St Jeor) rounds to a whole kcal", () => {
   expect(bmr({ sex: "male", weightKg: 80, heightCm: 180, age: 35 })).toBe(1755)
@@ -30,4 +30,8 @@ it("navyBodyFat female needs hipCm", () => {
 
 it("navyBodyFat is null when the log argument is not positive", () => {
   expect(navyBodyFat({ sex: "male", heightCm: 180, waistCm: 38, neckCm: 40 })).toBeNull()
+})
+
+it("bmi with 1 decimal", () => {
+  expect(bmi(80, 180)).toBe(24.7)
 })

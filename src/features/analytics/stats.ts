@@ -1,7 +1,8 @@
 import type { Exercise, Muscle } from "@/content/types"
+import { weekProgress } from "@/features/calendar/calendar"
 import { isoDate } from "@/features/program/model"
 import { rollingMean, type Point } from "@/lib/calc"
-import { addDays } from "@/lib/dates"
+import { addDays, startOfWeek } from "@/lib/dates"
 import type { Rows } from "@/lib/db"
 
 export type MuscleGroup = "chest" | "back" | "shoulders" | "arms" | "legs" | "glutes" | "core" | "calves"
@@ -74,4 +75,14 @@ export function weeklySetsByGroup(rows: Rows, exercises: Map<string, Exercise>, 
     for (const g of new Set(e.primaryMuscles.map((m) => MUSCLE_GROUP[m]))) out[g] += 1
   }
   return out
+}
+
+/** planned vs done sessions per week, oldest first; the last entry is the week of today */
+export function planVsFact(rows: Rows, today: string, weeks = 8): { week: string; planned: number; done: number }[] {
+  const current = startOfWeek(today)
+  return Array.from({ length: weeks }, (_, i) => {
+    const week = addDays(current, -7 * (weeks - 1 - i))
+    const { done, total } = weekProgress(rows, week)
+    return { week, planned: total, done }
+  })
 }

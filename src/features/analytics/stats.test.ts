@@ -3,7 +3,7 @@ import { all as exercises, bySlug } from "@/features/exercises/useExercises"
 import { finishSession, programRows } from "@/features/program/engine/fixtures/rows"
 import { plannedSessions } from "@/features/program/programService"
 import { emptyRows } from "@/lib/db"
-import { GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, weeklySetsByGroup, weightTrend } from "./stats"
+import { GROUP_RU, latestValue, metricSeries, MUSCLE_GROUP, planVsFact, weeklySetsByGroup, weightTrend } from "./stats"
 
 const metric = (id: string, date: string, weight_kg: number | null, waist_cm: number | null = null, neck_cm: number | null = null, hip_cm: number | null = null) =>
   ({ id, user_id: "local", created_at: "", updated_at: "", date, weight_kg, waist_cm, neck_cm, hip_cm })
@@ -36,4 +36,14 @@ it("weeklySetsByGroup counts a set once per primary muscle group", () => {
   for (const g of new Set(push.primaryMuscles.map((m) => MUSCLE_GROUP[m]))) expected[g] += 2
   for (const g of new Set(squat.primaryMuscles.map((m) => MUSCLE_GROUP[m]))) expected[g] += 1
   expect(groups).toEqual(expected)
+})
+it("planVsFact returns the last weeks ending with the current one", () => {
+  const rows = programRows()
+  const s = plannedSessions(rows, "p1")
+  finishSession(rows, s[0].id, "2026-10-12T18:00:00.000Z", [])
+  expect(planVsFact(rows, "2026-10-21", 3)).toEqual([
+    { week: "2026-10-05", planned: 0, done: 0 },
+    { week: "2026-10-12", planned: 3, done: 1 },
+    { week: "2026-10-19", planned: 3, done: 0 },
+  ])
 })

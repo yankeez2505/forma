@@ -41,3 +41,24 @@ export function dayStatus(rows: Rows, date: string, today: string): DayStatus {
   if (!planned) return "rest"
   return date >= today ? "planned" : "missed"
 }
+
+/** planned sessions in [weekStart, weekStart + 6]: finished / total */
+export function weekProgress(rows: Rows, weekStart: string): { done: number; total: number } {
+  const end = addDays(weekStart, 6)
+  const finished = finishedByPlanned(rows)
+  const week = Object.values(rows.planned_sessions).filter((s) => s.date >= weekStart && s.date <= end)
+  return { done: week.filter((s) => finished.has(s.id)).length, total: week.length }
+}
+
+/** fully completed weeks in a row, counting back from the current week (counted only once complete); a week without sessions ends the run */
+export function weekStreak(rows: Rows, today: string): number {
+  const current = startOfWeek(today)
+  if (weekProgress(rows, current).total === 0) return 0
+  const complete = (week: string) => {
+    const { done, total } = weekProgress(rows, week)
+    return total > 0 && done === total
+  }
+  let streak = 0
+  for (let week = complete(current) ? current : addDays(current, -7); complete(week); week = addDays(week, -7)) streak++
+  return streak
+}

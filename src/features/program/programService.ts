@@ -2,8 +2,9 @@ import type { Exercise } from "@/content/types"
 import type { Rows, Upsertable } from "@/lib/db"
 import { newId } from "@/lib/id"
 import type { Program, Workout } from "@/lib/schema"
+import { generateBlock } from "./engine/generateBlock"
 import type { SessionLog, SessionPlan, TestInput } from "./engine/types"
-import type { StoredConfig } from "./model"
+import { toPlannedRow, type StoredConfig } from "./model"
 
 export interface ProgramRows {
   program: Upsertable<"programs">
@@ -41,8 +42,13 @@ export function blockComplete(_rows: Rows, _today: string): boolean {
   throw new Error("not implemented")
 }
 
-export function buildProgram(_cfg: StoredConfig, _exercises: Exercise[], _history: SessionLog[], _id: string = newId()): ProgramRows {
-  throw new Error("not implemented")
+export function buildProgram(cfg: StoredConfig, exercises: Exercise[], history: SessionLog[], id: string = newId()): ProgramRows {
+  const sessions = generateBlock(cfg, exercises, history, cfg.blockIndex, id)
+  const template = cfg.profile.days_per_week === 4 ? "upperlower" : "fullbody"
+  return {
+    program: { id, start_date: cfg.startDate, goal: cfg.profile.goal, template, config: cfg, active: true },
+    sessions: sessions.map((s) => toPlannedRow(s, id)),
+  }
 }
 
 /** the same program row with the next block: config bumped, sessions regenerated from blockStart */

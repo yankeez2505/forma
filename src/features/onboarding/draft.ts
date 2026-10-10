@@ -97,3 +97,8 @@ export const useOnboarding = create<OnboardingStore>()(
     { name: "forma-onboarding", storage: jsonStorage() },
   ),
 )
+
+export interface StepProps {
+  d: OnboardingDraft
+  patch(p: Partial<OnboardingDraft>): void
+}

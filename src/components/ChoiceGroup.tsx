@@ -1,7 +1,7 @@
 import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export interface ChoiceOption<T extends string> {
+export interface ChoiceOption<T extends string | number> {
   value: T
   label: string
   hint?: string
@@ -19,7 +19,7 @@ const Text = ({ label, hint }: { label: string; hint?: string }) => (
 )
 
 /** single choice as card buttons */
-export function ChoiceGroup<T extends string>({
+export function ChoiceGroup<T extends string | number>({
   value, onChange, options, columns = 1,
 }: { value?: T; onChange: (v: T) => void; options: ChoiceOption<T>[]; columns?: Columns }) {
   return (

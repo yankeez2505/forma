@@ -97,10 +97,11 @@ export const toggleDone = (d: ActiveWorkout, slug: string): ActiveWorkout => ({
   done: d.done.includes(slug) ? d.done.filter((x) => x !== slug) : [...d.done, slug],
 })
 export function completeWorkout(w: Workout, rpe: number | null, notes: string | null, now: Date): Upsertable<"workouts"> {
-  return todo(w, rpe, notes, now)
+  return { ...w, finished_at: now.toISOString(), rpe, notes: notes?.trim() || null }
 }
+/** an abort with logged sets is kept as a finished workout; with none the row stays open and history ignores it */
 export function abortWorkout(w: Workout, loggedSets: number, now: Date): Upsertable<"workouts"> | null {
-  return todo(w, loggedSets, now)
+  return loggedSets > 0 ? { ...w, finished_at: now.toISOString(), notes: ABORT_NOTE } : null
 }
 export function resumeDecision(draft: ActiveWorkout | null, req: { workoutId: string } | { plannedId: string }): "continue" | "ask" | "none" {
   return todo(draft, req)
